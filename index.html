@@ -6,184 +6,76 @@
 <meta name="robots" content="index,follow">
 <title>Ironpetal</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4c4 6 10 8 10 14a10 10 0 1 1-20 0c0-6 6-8 10-14z' fill='%233f3a36'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#efe6db;
-  --paper:#fbf7f1;
-  --ink:#1a1714;
-  --muted:#6f675f;
-  --line:rgba(26,23,20,.1);
-  --accent:#3a342e;
-  --soft:#e8dfd3;
-  --sidebar:78px;
-  --font:"IBM Plex Sans",system-ui,sans-serif;
-  --serif:"Cormorant Garamond",Georgia,serif;
-  --shadow:0 20px 50px rgba(40,30,20,.08);
+  --ink:#1a1714;--muted:#6f675f;--line:rgba(26,23,20,.1);--soft:#e8dfd3;
+  --paper:rgba(251,247,241,.88);--sidebar:78px;
+  --font:"IBM Plex Sans",system-ui,sans-serif;--serif:"Cormorant Garamond",Georgia,serif;
+  --shadow:0 18px 48px rgba(40,30,20,.08);--accent:#3a342e;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{
-  font-family:var(--font);
-  color:var(--ink);
-  background-color:var(--bg);
-  overflow:hidden;
+  font-family:var(--font);color:var(--ink);overflow:hidden;
+  background:#efe6db url("bg.svg") center/cover no-repeat fixed;
 }
-body::before{
-  content:"";
-  position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(1200px 600px at 0% 0%, rgba(255,255,255,.55), transparent 55%),
-    radial-gradient(900px 500px at 100% 10%, rgba(198,170,140,.28), transparent 50%),
-    radial-gradient(700px 500px at 80% 100%, rgba(160,130,110,.18), transparent 45%),
-    linear-gradient(180deg,#f3ebe1 0%, #e9dfd2 100%);
-}
-body::after{
-  content:"";
-  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;
-  background-image:url("data:image/svg+xml,%3Csvg width='160' height='160' viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c4a88a' stroke-width='1' opacity='0.35'%3E%3Cpath d='M20 120c20-40 40-60 60-80 10 20 30 40 40 70'/%3E%3Cpath d='M90 20c10 25 10 45-5 70'/%3E%3C/g%3E%3C/svg%3E");
-}
-button,input{font:inherit;color:inherit}
+button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
 
-#langGate{
-  position:fixed;inset:0;z-index:1000;
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;
-  background:
-    radial-gradient(800px 400px at 50% -10%, rgba(255,255,255,.75), transparent 60%),
-    linear-gradient(180deg,#f4ece3,#e8ddd0);
-}
+#langGate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(239,230,219,.92);backdrop-filter:blur(8px)}
 #langGate.hidden{display:none}
-.lang-box{
-  width:min(540px,100%);
-  background:rgba(251,247,241,.92);
-  border:1px solid var(--line);
-  border-radius:26px;
-  box-shadow:var(--shadow);
-  padding:32px 24px 22px;
-  animation:rise .45s ease both;
-}
-.lang-box h1{font-family:var(--serif);font-size:clamp(30px,5vw,42px);font-weight:500;margin-bottom:8px}
-.lang-box p{color:var(--muted);font-size:14px;margin-bottom:18px;line-height:1.5}
-.lang-search{
-  width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;
-  padding:13px 14px;margin-bottom:12px;outline:none;
-}
-.lang-list{max-height:300px;overflow:auto;display:grid;gap:5px}
-.lang-item{
-  text-align:left;padding:11px 12px;border-radius:11px;
-  display:flex;justify-content:space-between;gap:10px;
-  border:1px solid transparent;
-}
-.lang-item:hover,.lang-item.active{background:rgba(26,23,20,.05)}
+.lang-box{width:min(540px,100%);background:var(--paper);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:28px 22px 20px;animation:rise .4s ease}
+.lang-box h1{font-family:var(--serif);font-size:clamp(28px,4vw,40px);font-weight:500;margin-bottom:8px}
+.lang-box p{color:var(--muted);font-size:14px;margin-bottom:16px}
+.lang-search{width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px;outline:none}
+.lang-list{max-height:300px;overflow:auto;display:grid;gap:4px}
+.lang-item{text-align:start;padding:10px 12px;border-radius:10px;display:flex;justify-content:space-between;gap:8px}
+.lang-item:hover{background:rgba(26,23,20,.05)}
 .lang-item small{color:var(--muted)}
 
 #app{position:relative;z-index:1;display:none;height:100%}
-#app.show{display:flex;animation:fadein .35s ease}
-.sidebar{
-  width:var(--sidebar);flex-shrink:0;height:100%;
-  border-right:1px solid var(--line);
-  background:rgba(251,247,241,.78);
-  backdrop-filter:blur(12px);
-  display:flex;flex-direction:column;align-items:center;
-  padding:16px 0 12px;gap:6px;z-index:5;
-}
-.brand{
-  width:40px;height:40px;border-radius:13px;margin-bottom:8px;
-  background:#fff;border:1px solid var(--line);
-  display:grid;place-items:center;
-  box-shadow:0 8px 18px rgba(40,30,20,.05);
-}
-.brand svg{width:20px;height:20px}
-.side-btn{
-  width:46px;height:46px;border-radius:15px;
-  display:grid;place-items:center;position:relative;
-  transition:background .18s,transform .18s,box-shadow .18s;
-}
+#app.show{display:flex;animation:fade .3s ease}
+.sidebar{width:var(--sidebar);flex-shrink:0;height:100%;border-inline-end:1px solid var(--line);background:rgba(251,247,241,.82);backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;z-index:5}
+.brand{width:40px;height:40px;border-radius:13px;margin-bottom:6px;background:#fff;border:1px solid var(--line);display:grid;place-items:center}
+.side-btn{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;position:relative;transition:.18s}
 .side-btn svg{width:21px;height:21px}
-.side-btn:hover{background:rgba(26,23,20,.05);transform:translateY(-1px)}
-.side-btn.active{
-  background:#fff;border:1px solid var(--line);
-  box-shadow:0 10px 22px rgba(40,30,20,.07);
-}
-.side-btn .tip{
-  position:absolute;left:54px;top:50%;transform:translateY(-50%);
-  background:var(--ink);color:#fff;font-size:11px;padding:5px 8px;border-radius:7px;
-  opacity:0;pointer-events:none;white-space:nowrap;transition:opacity .15s;
-}
-[dir="rtl"] .side-btn .tip{left:auto;right:54px}
+.side-btn:hover{background:rgba(26,23,20,.05)}
+.side-btn.active{background:#fff;border:1px solid var(--line);box-shadow:0 8px 20px rgba(40,30,20,.06)}
+.side-btn .tip{position:absolute;inset-inline-start:54px;top:50%;transform:translateY(-50%);background:var(--ink);color:#fff;font-size:11px;padding:5px 8px;border-radius:7px;opacity:0;pointer-events:none;white-space:nowrap;z-index:40}
 .side-btn:hover .tip{opacity:1}
 .side-spacer{flex:1}
 
 .main{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;overflow:hidden}
-.topbar{
-  height:60px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
-  padding:0 18px;border-bottom:1px solid var(--line);
-  background:rgba(251,247,241,.7);backdrop-filter:blur(12px);
-}
-.top-title{font-family:var(--serif);font-size:22px;font-weight:500}
-.menu-wrap{position:relative}
-.icon-btn{
-  width:38px;height:38px;border-radius:11px;border:1px solid var(--line);
-  background:#fff;display:grid;place-items:center;
-}
-.icon-btn:hover{background:var(--soft)}
-.menu{
-  position:absolute;top:44px;right:0;width:210px;
-  background:#fff;border:1px solid var(--line);border-radius:12px;
-  box-shadow:var(--shadow);padding:6px;display:none;z-index:30;
-  max-height:min(280px,70vh);overflow:auto;
-}
-[dir="rtl"] .menu{right:auto;left:0}
-.menu.open{display:block;animation:pop .18s ease}
-.menu button{width:100%;text-align:left;padding:10px 11px;border-radius:9px;font-size:13px}
-[dir="rtl"] .menu button{text-align:right}
+.topbar{height:58px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--line);background:rgba(251,247,241,.75);backdrop-filter:blur(12px);position:relative;z-index:50}
+.top-title{font-family:var(--serif);font-size:21px;font-weight:500}
+.menu-wrap{position:relative;z-index:60}
+.icon-btn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
+.menu{position:absolute;top:calc(100% + 6px);inset-inline-end:0;width:220px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:6px;display:none;z-index:70}
+.menu.open{display:block;animation:pop .16s ease}
+.menu button{width:100%;text-align:start;padding:10px 11px;border-radius:9px;font-size:13px}
 .menu button:hover{background:rgba(26,23,20,.05)}
 
-.content{flex:1;overflow:auto;padding:24px 22px 36px}
-.content::-webkit-scrollbar{width:7px}
-.content::-webkit-scrollbar-thumb{background:rgba(26,23,20,.14);border-radius:99px}
-
-.panel{animation:rise .4s ease both}
-.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:center;margin-bottom:22px}
-@media(max-width:900px){.hero{grid-template-columns:1fr}.sidebar{width:70px}}
-.hero h1{font-family:var(--serif);font-size:clamp(34px,5vw,52px);line-height:1.05;margin-bottom:10px}
-.hero p{color:var(--muted);max-width:46ch;line-height:1.6;margin-bottom:18px}
-.btn-row{display:flex;flex-wrap:wrap;gap:8px}
-.btn{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:11px 16px;border-radius:999px;font-size:13px;font-weight:500;
-  transition:transform .15s,background .15s;
-}
-.btn:hover{transform:translateY(-1px)}
+.content{flex:1;overflow:auto;padding:20px 18px 32px;position:relative;z-index:1}
+.panel{animation:rise .35s ease}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:center;margin-bottom:18px}
+@media(max-width:900px){.hero{grid-template-columns:1fr}}
+.hero h1{font-family:var(--serif);font-size:clamp(32px,5vw,50px);line-height:1.05;margin-bottom:10px}
+.hero p{color:var(--muted);line-height:1.55;margin-bottom:14px;max-width:46ch}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 15px;border-radius:999px;font-size:13px;font-weight:500}
 .btn-dark{background:var(--ink);color:#fff}
 .btn-ghost{background:#fff;border:1px solid var(--line)}
-.hero-art{
-  min-height:210px;border-radius:24px;border:1px solid var(--line);
-  background:
-    linear-gradient(145deg, rgba(255,255,255,.9), rgba(232,214,196,.5)),
-    radial-gradient(circle at 70% 30%, rgba(180,140,110,.22), transparent 55%);
-  position:relative;overflow:hidden;
-}
-.hero-art i{
-  position:absolute;width:120px;height:160px;right:12%;top:12%;
-  border:1.5px solid rgba(160,120,90,.35);border-radius:50% 50% 45% 45%;
-  transform:rotate(18deg);animation:float 6s ease-in-out infinite;
-}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.hero-art{min-height:200px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(145deg,#fffaf4,rgba(232,214,196,.55));position:relative;overflow:hidden}
+.hero-art i{position:absolute;width:110px;height:150px;right:12%;top:14%;border:1.5px solid rgba(160,120,90,.35);border-radius:50% 50% 45% 45%;transform:rotate(18deg);animation:float 6s ease-in-out infinite}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
 @media(max-width:800px){.grid3{grid-template-columns:1fr}}
-.card{
-  background:rgba(251,247,241,.9);border:1px solid var(--line);border-radius:16px;
-  padding:18px;box-shadow:0 10px 28px rgba(40,30,20,.03);
-  transition:transform .2s,box-shadow .2s;
-}
-.card:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(40,30,20,.06)}
-.card h3{font-family:var(--serif);font-size:22px;font-weight:500;margin:8px 0}
-.card p{color:var(--muted);font-size:13px;line-height:1.55}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;transition:.2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.card h3{font-family:var(--serif);font-size:20px;font-weight:500;margin:6px 0}
+.card p{color:var(--muted);font-size:13px;line-height:1.5}
 
 body[data-product="lumera"]{--accent:#5b4b8a;--soft:#ebe6f5}
 body[data-product="host"]{--accent:#2f5d8c;--soft:#e6eef6}
@@ -191,117 +83,78 @@ body[data-product="store"]{--accent:#3d6b4f;--soft:#e7f0ea}
 body[data-product="future"]{--accent:#0f766e;--soft:#e6f4f2}
 body[data-product="royal"]{--accent:#8a6a2f;--soft:#f3ecd9}
 
-.product-banner{
-  border:1px solid var(--line);border-radius:22px;padding:20px;
-  background:linear-gradient(120deg,#fffaf4,var(--soft));
-  margin-bottom:16px;
-}
-.product-banner .tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px}
-.product-banner h2{font-family:var(--serif);font-size:32px;font-weight:500;margin-bottom:6px}
-.product-banner p{color:var(--muted);line-height:1.55;max-width:62ch}
+.banner{border:1px solid var(--line);border-radius:20px;padding:18px;background:linear-gradient(120deg,#fffaf4,var(--soft,#e8dfd3));margin-bottom:14px}
+.banner .tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px}
+.banner h2{font-family:var(--serif);font-size:30px;font-weight:500;margin-bottom:6px}
+.banner p{color:var(--muted);line-height:1.5}
 
-.auth-shell{min-height:calc(100% - 20px);display:grid;place-items:center;padding:10px 0 24px}
-.auth-main{
-  width:min(400px,100%);
-  background:#fbf7f1;
-  border:1px solid var(--line);
-  border-radius:8px 8px 18px 18px;
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-.auth-head{
-  padding:18px 20px 12px;
-  border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,#fffdf9,#f5efe7);
-}
-.auth-head .brandline{
-  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;
-}
-.auth-head h2{font-family:var(--serif);font-size:28px;font-weight:500}
-.auth-body{padding:18px 20px 20px}
-.seg{
-  display:grid;grid-template-columns:1fr 1fr;gap:0;
-  border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:16px;
-}
+.mod{border:1px solid var(--line);border-radius:16px;background:var(--paper);padding:14px;margin-bottom:12px}
+.mod h4{font-family:var(--serif);font-size:18px;margin-bottom:8px}
+.feed{display:grid;gap:10px}
+.feed-item{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.feed-item .who{font-weight:600;font-size:13px;margin-bottom:4px}
+.feed-item .txt{font-size:13px;color:var(--muted);line-height:1.45}
+.composer{display:flex;gap:8px;margin-top:10px}
+.composer input,.composer textarea,.field input,.field textarea{width:100%;border:1px solid #d9d0c4;border-radius:8px;padding:10px 12px;background:#fff;outline:none}
+.composer button,.act{padding:10px 14px;border-radius:8px;background:var(--ink);color:#fff;font-size:13px}
+.list{display:grid;gap:8px}
+.list button{text-align:start;padding:12px;border-radius:12px;border:1px solid var(--line);background:#fff}
+.list button:hover{background:var(--soft)}
+
+.auth-shell,.prof-shell{max-width:440px;margin:0 auto}
+.box{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.box-h{padding:16px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fffdf9,#f5efe7)}
+.box-h .eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.box-h h2{font-family:var(--serif);font-size:26px;font-weight:500}
+.box-b{padding:16px 18px 18px}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:14px}
 .seg button{padding:10px;font-size:13px;background:#fff;color:var(--muted)}
 .seg button.on{background:var(--ink);color:#fff}
-.fld{margin-bottom:12px}
-.fld label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}
-.fld input{
-  width:100%;padding:11px 12px;border-radius:6px;
-  border:1px solid #d9d0c4;background:#fff;outline:none;
-}
-.fld input:focus{border-color:#a89880;box-shadow:0 0 0 3px rgba(168,152,128,.18)}
-.auth-msg{min-height:18px;font-size:12px;color:#9a3412;margin:6px 0 10px}
-.auth-msg.ok{color:#3f6b4d}
-.auth-go{width:100%;padding:12px;border-radius:6px;background:var(--ink);color:#fff;font-weight:500}
-.auth-go:hover{filter:brightness(1.06)}
-.auth-note{margin-top:12px;font-size:11px;color:var(--muted);line-height:1.45}
+.field{margin-bottom:11px}
+.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}
+.msg{min-height:16px;font-size:12px;color:#9a3412;margin:4px 0 8px}
+.msg.ok{color:#3f6b4d}
+.note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.4}
+.avatar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.avatar{width:56px;height:56px;border-radius:50%;background:var(--soft);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--serif);font-size:22px;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
 
-@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
 @keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @keyframes float{0%,100%{transform:rotate(18deg) translateY(0)}50%{transform:rotate(18deg) translateY(-8px)}}
-.hidden{display:none!important}
 </style>
 </head>
 <body data-product="home">
-
 <div id="langGate">
   <div class="lang-box">
-    <h1>Choose your language</h1>
-    <p>Select a language to continue. You can change this later from settings.</p>
+    <h1 id="langTitle">Choose your language</h1>
+    <p id="langSub">Select a language to continue. You can change this later from settings.</p>
     <input class="lang-search" id="langSearch" type="search" placeholder="Search language or country…" autocomplete="off">
     <div class="lang-list" id="langList"></div>
   </div>
 </div>
-
 <div id="app">
   <aside class="sidebar">
-    <div class="brand" title="Ironpetal">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c3 4 7 5.5 7 10a7 7 0 1 1-14 0c0-4.5 4-6 7-10z"/></svg>
-    </div>
-    <button class="side-btn active" data-go="home" aria-label="Home">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-5v-5H10v5H5a1 1 0 0 1-1-1v-8.5z"/></svg>
-      <span class="tip">Home</span>
-    </button>
-    <button class="side-btn" data-go="lumera" aria-label="Lumera">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#5b4b8a" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg>
-      <span class="tip">Lumera</span>
-    </button>
-    <button class="side-btn" data-go="host" aria-label="Host">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#2f5d8c" stroke-width="1.6"><rect x="4" y="4" width="16" height="6" rx="1.5"/><rect x="4" y="14" width="16" height="6" rx="1.5"/><circle cx="8" cy="7" r=".8" fill="#2f5d8c"/><circle cx="8" cy="17" r=".8" fill="#2f5d8c"/></svg>
-      <span class="tip">Host</span>
-    </button>
-    <button class="side-btn" data-go="store" aria-label="Store">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#3d6b4f" stroke-width="1.6"><path d="M6 8h12l-1 11H7L6 8z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
-      <span class="tip">Store</span>
-    </button>
-    <button class="side-btn" data-go="future" aria-label="Future">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="1.6"><path d="M12 3 5 19h14L12 3z"/><path d="M12 11v5"/></svg>
-      <span class="tip">Future</span>
-    </button>
-    <button class="side-btn" data-go="royal" aria-label="Royal">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#8a6a2f" stroke-width="1.6"><path d="M4 16 6.5 8l3.5 4L12 7l2 5 3.5-4L20 16H4z"/><path d="M5 18h14"/></svg>
-      <span class="tip">Royal</span>
-    </button>
+    <div class="brand"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c3 4 7 5.5 7 10a7 7 0 1 1-14 0c0-4.5 4-6 7-10z"/></svg></div>
+    <button class="side-btn active" data-go="home"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-5v-5H10v5H5a1 1 0 0 1-1-1v-8.5z"/></svg><span class="tip">Home</span></button>
+    <button class="side-btn" data-go="lumera"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#5b4b8a" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg><span class="tip">Lumera</span></button>
+    <button class="side-btn" data-go="host"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#2f5d8c" stroke-width="1.6"><rect x="4" y="4" width="16" height="6" rx="1.5"/><rect x="4" y="14" width="16" height="6" rx="1.5"/></svg><span class="tip">Host</span></button>
+    <button class="side-btn" data-go="store"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#3d6b4f" stroke-width="1.6"><path d="M6 8h12l-1 11H7L6 8z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg><span class="tip">Store</span></button>
+    <button class="side-btn" data-go="future"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#0f766e" stroke-width="1.6"><path d="M12 3 5 19h14L12 3z"/></svg><span class="tip">Future</span></button>
+    <button class="side-btn" data-go="royal"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#8a6a2f" stroke-width="1.6"><path d="M4 16 6.5 8l3.5 4L12 7l2 5 3.5-4L20 16H4z"/><path d="M5 18h14"/></svg><span class="tip">Royal</span></button>
     <div class="side-spacer"></div>
-    <button class="side-btn" data-go="auth" aria-label="Account">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="9" r="3.2"/><path d="M5.5 19c1.5-3 4-4.5 6.5-4.5S17 16 18.5 19"/></svg>
-      <span class="tip">Account</span>
-    </button>
+    <button class="side-btn" data-go="profile"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="9" r="3.2"/><path d="M5.5 19c1.5-3 4-4.5 6.5-4.5S17 16 18.5 19"/></svg><span class="tip">Profile</span></button>
   </aside>
-
   <div class="main">
     <header class="topbar">
       <div class="top-title" id="topTitle">Ironpetal</div>
       <div class="menu-wrap">
-        <button class="icon-btn" id="menuBtn" aria-label="Settings">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
+        <button class="icon-btn" id="menuBtn" aria-label="menu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
         <div class="menu" id="settingsMenu">
-          <button type="button" id="changeLangBtn">Change language</button>
-          <button type="button" id="goAccountBtn">Account</button>
+          <button type="button" id="changeLangBtn">Language</button>
+          <button type="button" id="goProfileBtn">Profile</button>
+          <button type="button" id="goAuthBtn">Account</button>
           <button type="button" id="logoutBtn" class="hidden">Sign out</button>
         </div>
       </div>
@@ -309,207 +162,279 @@ body[data-product="royal"]{--accent:#8a6a2f;--soft:#f3ecd9}
     <main class="content" id="view"></main>
   </div>
 </div>
-
 <script>
-const LANGS = [
-  {code:"en",name:"English",region:"Global"},
-  {code:"fa",name:"فارسی",region:"Iran"},
-  {code:"ar",name:"العربية",region:"Middle East"},
-  {code:"tr",name:"Türkçe",region:"Türkiye"},
-  {code:"de",name:"Deutsch",region:"Germany"},
-  {code:"fr",name:"Français",region:"France"},
-  {code:"es",name:"Español",region:"Spain"},
-  {code:"ru",name:"Русский",region:"Russia"},
-  {code:"zh",name:"中文",region:"China"},
-  {code:"ja",name:"日本語",region:"Japan"},
-  {code:"hi",name:"हिन्दी",region:"India"},
-  {code:"ur",name:"اردو",region:"Pakistan"},
-  {code:"pt",name:"Português",region:"Brazil"},
-  {code:"it",name:"Italiano",region:"Italy"},
-  {code:"ko",name:"한국어",region:"Korea"},
-  {code:"id",name:"Bahasa Indonesia",region:"Indonesia"},
-  {code:"ku",name:"Kurdî",region:"Kurdistan"},
-  {code:"az",name:"Azərbaycan",region:"Azerbaijan"}
+const LANGS=[
+{code:"en",name:"English",region:"Global"},
+{code:"fa",name:"فارسی",region:"Iran"},
+{code:"de",name:"Deutsch",region:"Germany"},
+{code:"fr",name:"Français",region:"France"},
+{code:"es",name:"Español",region:"Spain"},
+{code:"ar",name:"العربية",region:"Middle East"},
+{code:"tr",name:"Türkçe",region:"Türkiye"},
+{code:"ru",name:"Русский",region:"Russia"},
+{code:"zh",name:"中文",region:"China"},
+{code:"ja",name:"日本語",region:"Japan"},
+{code:"hi",name:"हिन्दी",region:"India"},
+{code:"ur",name:"اردو",region:"Pakistan"},
+{code:"pt",name:"Português",region:"Brazil"},
+{code:"it",name:"Italiano",region:"Italy"},
+{code:"ko",name:"한국어",region:"Korea"},
+{code:"id",name:"Bahasa Indonesia",region:"Indonesia"},
+{code:"nl",name:"Nederlands",region:"Netherlands"},
+{code:"pl",name:"Polski",region:"Poland"},
+{code:"uk",name:"Українська",region:"Ukraine"},
+{code:"sv",name:"Svenska",region:"Sweden"},
+{code:"ku",name:"Kurdî",region:"Kurdistan"},
+{code:"az",name:"Azərbaycan",region:"Azerbaijan"}
 ];
-
-const I18N = {
-  en:{
-    home:"Ironpetal", hero:"Crafted with intention.",
-    sub:"A calm home for the Lumera suite.",
-    explore:"Open suite", account:"Account",
-    c1:"Purposeful design", d1:"Quiet screens. Clear hierarchy.",
-    c2:"One shell", d2:"Every Lumera product opens here.",
-    c3:"Soft strength", d3:"Steady, not loud.",
-    signIn:"Sign in", signUp:"Create account",
-    user:"Username", pass:"Password", pass2:"Confirm password",
-    welcome:"Welcome", join:"Create your desk",
-    needUser:"Username required", needPass:"Password required", mismatch:"Passwords do not match",
-    okIn:"Signed in", okUp:"Account ready", bad:"Wrong username or password", exists:"Username taken",
-    logout:"Sign out", lang:"Change language", settingsAccount:"Account",
-    note:"Local desk account on this device. No server call required."
-  },
-  fa:{
-    home:"آیرون‌پتال", hero:"با دقت ساخته شده.",
-    sub:"خانه‌ای آرام برای مجموعه لومرا.",
-    explore:"باز کردن مجموعه", account:"حساب کاربری",
-    c1:"طراحی هدفمند", d1:"صفحه آرام و خوانا.",
-    c2:"یک پوسته", d2:"همه لومراها از اینجا باز می‌شوند.",
-    c3:"قدرت نرم", d3:"ثابت، نه پرهیاهو.",
-    signIn:"ورود", signUp:"ثبت‌نام",
-    user:"نام کاربری", pass:"رمز عبور", pass2:"تکرار رمز",
-    welcome:"خوش آمدید", join:"ساخت حساب",
-    needUser:"نام کاربری لازم است", needPass:"رمز لازم است", mismatch:"رمزها یکی نیستند",
-    okIn:"وارد شدید", okUp:"حساب آماده است", bad:"نام کاربری یا رمز اشتباه است", exists:"این نام گرفته شده",
-    logout:"خروج", lang:"تغییر زبان", settingsAccount:"حساب کاربری",
-    note:"حساب روی همین دستگاه ذخیره می‌شود. نیازی به سرور نیست."
-  }
+const RTL=new Set(["fa","ar","ur","he"]);
+/* compact i18n: base en, overlays */
+const EN={
+ home:"Ironpetal",hero:"Crafted with intention.",sub:"A calm home for the Lumera suite — all products open here with one account.",
+ explore:"Open suite",account:"Account",profile:"Profile",
+ c1:"Purposeful design",d1:"Quiet screens. Clear hierarchy.",c2:"One shell",d2:"Every Lumera product lives inside Ironpetal.",c3:"Soft strength",d3:"Steady, not loud.",
+ signIn:"Sign in",signUp:"Create account",user:"Username",pass:"Password",pass2:"Confirm password",
+ welcome:"Welcome",join:"Create your desk",needUser:"Username required",needPass:"Password required",mismatch:"Passwords do not match",
+ okIn:"Signed in",okUp:"Account ready",bad:"Wrong username or password",exists:"Username taken",
+ logout:"Sign out",lang:"Change language",needAuth:"Sign in to use this module",
+ display:"Display name",bio:"Bio",save:"Save profile",saved:"Profile saved",avatar:"Avatar URL (optional)",
+ posts:"Posts",newPost:"Share something",publish:"Publish",emptyFeed:"No posts yet — be the first.",
+ hostTitle:"Pages",hostHint:"Save a small HTML snippet and open a preview.",hostSave:"Save page",hostOpen:"Preview",
+ storeTitle:"Orders",storeHint:"Request a site or bot. Stored on this desk.",storeSend:"Submit request",
+ futureTitle:"Lab",futureHint:"Ideas for the next wave of the suite.",
+ royalTitle:"Standing",royalHint:"Tasks and presence across the suite.",
+ task1:"Complete your profile",task2:"Publish a Lumera post",task3:"Save a Host page",
+ done:"Done",todo:"To do",langTitle:"Choose your language",langSub:"Select a language. You can change it later in settings."
 };
-
-const state = {
-  lang: localStorage.getItem("ip_lang") || "",
-  session: null,
-  product: "home",
-  authTab: "login"
+const PACK={
+en:EN,
+fa:{home:"آیرون‌پتال",hero:"با دقت ساخته شده.",sub:"خانه‌ای آرام برای مجموعه لومرا — همه محصولات اینجا با یک حساب باز می‌شوند.",explore:"باز کردن مجموعه",account:"حساب",profile:"پروفایل",c1:"طراحی هدفمند",d1:"صفحه آرام و خوانا.",c2:"یک پوسته",d2:"هر لومرا داخل آیرون‌پتال زندگی می‌کند.",c3:"قدرت نرم",d3:"ثابت، نه پرهیاهو.",signIn:"ورود",signUp:"ثبت‌نام",user:"نام کاربری",pass:"رمز عبور",pass2:"تکرار رمز",welcome:"خوش آمدید",join:"ساخت میز کار",needUser:"نام کاربری لازم است",needPass:"رمز لازم است",mismatch:"رمزها یکی نیستند",okIn:"وارد شدید",okUp:"حساب آماده است",bad:"نام کاربری یا رمز اشتباه است",exists:"این نام گرفته شده",logout:"خروج",lang:"تغییر زبان",needAuth:"برای این بخش وارد شوید",display:"نام نمایشی",bio:"بیو",save:"ذخیره پروفایل",saved:"ذخیره شد",avatar:"آدرس تصویر (اختیاری)",posts:"پست‌ها",newPost:"چیزی بنویس",publish:"انتشار",emptyFeed:"هنوز پستی نیست.",hostTitle:"صفحات",hostHint:"قطعه HTML ذخیره و پیش‌نمایش کنید.",hostSave:"ذخیره صفحه",hostOpen:"پیش‌نمایش",storeTitle:"سفارش‌ها",storeHint:"درخواست سایت یا ربات روی همین میز.",storeSend:"ارسال درخواست",futureTitle:"آزمایشگاه",futureHint:"ایده‌های موج بعدی.",royalTitle:"جایگاه",royalHint:"تسک‌ها در کل مجموعه.",task1:"پروفایل را کامل کن",task2:"یک پست لومرا بگذار",task3:"یک صفحه هاست ذخیره کن",done:"انجام شد",todo:"مانده",langTitle:"زبان خود را انتخاب کنید",langSub:"زبان را انتخاب کنید. بعداً از تنظیمات قابل تغییر است."},
+de:{home:"Ironpetal",hero:"Mit Absicht gestaltet.",sub:"Ein ruhiges Zuhause für die Lumera-Suite — alle Produkte hier, ein Konto.",explore:"Suite öffnen",account:"Konto",profile:"Profil",c1:"Zielgerichtetes Design",d1:"Ruhige Oberflächen.",c2:"Eine Hülle",d2:"Jedes Lumera-Produkt lebt in Ironpetal.",c3:"Sanfte Stärke",d3:"Stabil, nicht laut.",signIn:"Anmelden",signUp:"Konto erstellen",user:"Benutzername",pass:"Passwort",pass2:"Passwort bestätigen",welcome:"Willkommen",join:"Arbeitsplatz erstellen",needUser:"Benutzername erforderlich",needPass:"Passwort erforderlich",mismatch:"Passwörter stimmen nicht",okIn:"Angemeldet",okUp:"Konto bereit",bad:"Falsche Daten",exists:"Name vergeben",logout:"Abmelden",lang:"Sprache ändern",needAuth:"Bitte anmelden",display:"Anzeigename",bio:"Bio",save:"Profil speichern",saved:"Gespeichert",avatar:"Avatar-URL",posts:"Beiträge",newPost:"Teilen",publish:"Veröffentlichen",emptyFeed:"Noch keine Beiträge.",hostTitle:"Seiten",hostHint:"HTML speichern und Vorschau öffnen.",hostSave:"Seite speichern",hostOpen:"Vorschau",storeTitle:"Aufträge",storeHint:"Website oder Bot anfragen.",storeSend:"Senden",futureTitle:"Labor",futureHint:"Ideen für die nächste Welle.",royalTitle:"Status",royalHint:"Aufgaben in der Suite.",task1:"Profil ausfüllen",task2:"Lumera-Beitrag",task3:"Host-Seite speichern",done:"Erledigt",todo:"Offen",langTitle:"Sprache wählen",langSub:"Sprache wählen. Später in den Einstellungen änderbar."},
+fr:{home:"Ironpetal",hero:"Conçu avec intention.",sub:"Un foyer calme pour la suite Lumera — tous les produits ici, un compte.",explore:"Ouvrir la suite",account:"Compte",profile:"Profil",c1:"Design utile",d1:"Écrans calmes.",c2:"Une coque",d2:"Chaque produit Lumera vit dans Ironpetal.",c3:"Force douce",d3:"Stable, pas bruyant.",signIn:"Connexion",signUp:"Créer un compte",user:"Identifiant",pass:"Mot de passe",pass2:"Confirmer",welcome:"Bienvenue",join:"Créer le bureau",needUser:"Identifiant requis",needPass:"Mot de passe requis",mismatch:"Mots de passe différents",okIn:"Connecté",okUp:"Compte prêt",bad:"Identifiants incorrects",exists:"Nom pris",logout:"Déconnexion",lang:"Changer de langue",needAuth:"Connectez-vous",display:"Nom affiché",bio:"Bio",save:"Enregistrer",saved:"Enregistré",avatar:"URL avatar",posts:"Publications",newPost:"Écrire",publish:"Publier",emptyFeed:"Pas encore de posts.",hostTitle:"Pages",hostHint:"Sauver un HTML et prévisualiser.",hostSave:"Sauver",hostOpen:"Aperçu",storeTitle:"Commandes",storeHint:"Demander un site ou un bot.",storeSend:"Envoyer",futureTitle:"Labo",futureHint:"Idées pour la suite.",royalTitle:"Statut",royalHint:"Tâches de la suite.",task1:"Compléter le profil",task2:"Publier sur Lumera",task3:"Sauver une page Host",done:"Fait",todo:"À faire",langTitle:"Choisissez votre langue",langSub:"Vous pourrez changer plus tard."},
+es:{home:"Ironpetal",hero:"Creado con intención.",sub:"Un hogar tranquilo para la suite Lumera.",explore:"Abrir suite",account:"Cuenta",profile:"Perfil",c1:"Diseño con propósito",d1:"Pantallas tranquilas.",c2:"Una cáscara",d2:"Cada Lumera vive en Ironpetal.",c3:"Fuerza suave",d3:"Firme, no ruidoso.",signIn:"Entrar",signUp:"Crear cuenta",user:"Usuario",pass:"Contraseña",pass2:"Confirmar",welcome:"Bienvenido",join:"Crear escritorio",needUser:"Usuario requerido",needPass:"Contraseña requerida",mismatch:"No coinciden",okIn:"Sesión iniciada",okUp:"Cuenta lista",bad:"Datos incorrectos",exists:"Nombre ocupado",logout:"Salir",lang:"Cambiar idioma",needAuth:"Inicia sesión",display:"Nombre",bio:"Bio",save:"Guardar",saved:"Guardado",avatar:"URL avatar",posts:"Publicaciones",newPost:"Escribe",publish:"Publicar",emptyFeed:"Sin posts aún.",hostTitle:"Páginas",hostHint:"Guarda HTML y previsualiza.",hostSave:"Guardar",hostOpen:"Vista previa",storeTitle:"Pedidos",storeHint:"Pide un sitio o bot.",storeSend:"Enviar",futureTitle:"Lab",futureHint:"Ideas siguientes.",royalTitle:"Estatus",royalHint:"Tareas de la suite.",task1:"Completa el perfil",task2:"Publica en Lumera",task3:"Guarda una página Host",done:"Hecho",todo:"Pendiente",langTitle:"Elige tu idioma",langSub:"Puedes cambiarlo después."},
+ar:{home:"آيرونبتال",hero:"صُنع بعناية.",sub:"بيت هادئ لمجموعة لوميرا — كل المنتجات هنا بحساب واحد.",explore:"فتح المجموعة",account:"الحساب",profile:"الملف",c1:"تصميم هادف",d1:"شاشات هادئة.",c2:"غلاف واحد",d2:"كل لوميرا داخل آيرونبتال.",c3:"قوة هادئة",d3:"ثابت بلا ضجيج.",signIn:"دخول",signUp:"إنشاء حساب",user:"اسم المستخدم",pass:"كلمة المرور",pass2:"تأكيد",welcome:"مرحباً",join:"إنشاء المكتب",needUser:"اسم المستخدم مطلوب",needPass:"كلمة المرور مطلوبة",mismatch:"غير متطابقتين",okIn:"تم الدخول",okUp:"الحساب جاهز",bad:"بيانات خاطئة",exists:"الاسم مستخدم",logout:"خروج",lang:"تغيير اللغة",needAuth:"سجّل الدخول",display:"الاسم الظاهر",bio:"نبذة",save:"حفظ الملف",saved:"تم الحفظ",avatar:"رابط الصورة",posts:"المنشورات",newPost:"اكتب شيئاً",publish:"نشر",emptyFeed:"لا منشورات بعد.",hostTitle:"صفحات",hostHint:"احفظ HTML ومعاينة.",hostSave:"حفظ",hostOpen:"معاينة",storeTitle:"طلبات",storeHint:"اطلب موقعاً أو بوتاً.",storeSend:"إرسال",futureTitle:"مختبر",futureHint:"أفكار الموجة التالية.",royalTitle:"المكانة",royalHint:"مهام المجموعة.",task1:"أكمل الملف",task2:"انشر في لوميرا",task3:"احفظ صفحة هوست",done:"تم",todo:"متبقي",langTitle:"اختر لغتك",langSub:"يمكن التغيير لاحقاً من الإعدادات."},
+tr:{home:"Ironpetal",hero:"Niyetle tasarlandı.",sub:"Lumera paketi için sakin bir yuva.",explore:"Paketi aç",account:"Hesap",profile:"Profil",c1:"Amaçlı tasarım",d1:"Sakin ekranlar.",c2:"Tek kabuk",d2:"Her Lumera Ironpetal içinde.",c3:"Yumuşak güç",d3:"Sağlam, gürültüsüz.",signIn:"Giriş",signUp:"Kayıt",user:"Kullanıcı adı",pass:"Şifre",pass2:"Tekrar",welcome:"Hoş geldin",join:"Masa oluştur",needUser:"Kullanıcı adı gerekli",needPass:"Şifre gerekli",mismatch:"Şifreler farklı",okIn:"Giriş yapıldı",okUp:"Hesap hazır",bad:"Hatalı bilgi",exists:"Ad alınmış",logout:"Çıkış",lang:"Dil değiştir",needAuth:"Giriş yapın",display:"Görünen ad",bio:"Biyografi",save:"Kaydet",saved:"Kaydedildi",avatar:"Avatar URL",posts:"Gönderiler",newPost:"Yaz",publish:"Yayınla",emptyFeed:"Henüz gönderi yok.",hostTitle:"Sayfalar",hostHint:"HTML kaydet ve önizle.",hostSave:"Kaydet",hostOpen:"Önizleme",storeTitle:"Siparişler",storeHint:"Site veya bot iste.",storeSend:"Gönder",futureTitle:"Laboratuvar",futureHint:"Sonraki fikirler.",royalTitle:"Durum",royalHint:"Paket görevleri.",task1:"Profili tamamla",task2:"Lumera gönderisi",task3:"Host sayfası kaydet",done:"Bitti",todo:"Bekliyor",langTitle:"Dilinizi seçin",langSub:"Sonra ayarlardan değiştirebilirsiniz."},
+ru:{home:"Ironpetal",hero:"Создано с намерением.",sub:"Спокойный дом для набора Lumera.",explore:"Открыть набор",account:"Аккаунт",profile:"Профиль",c1:"Осмысленный дизайн",d1:"Спокойные экраны.",c2:"Одна оболочка",d2:"Каждый Lumera внутри Ironpetal.",c3:"Мягкая сила",d3:"Устойчиво, без шума.",signIn:"Вход",signUp:"Регистрация",user:"Имя пользователя",pass:"Пароль",pass2:"Повтор",welcome:"Добро пожаловать",join:"Создать стол",needUser:"Нужно имя",needPass:"Нужен пароль",mismatch:"Пароли не совпадают",okIn:"Вы вошли",okUp:"Аккаунт готов",bad:"Неверные данные",exists:"Имя занято",logout:"Выйти",lang:"Сменить язык",needAuth:"Войдите",display:"Отображаемое имя",bio:"О себе",save:"Сохранить",saved:"Сохранено",avatar:"URL аватара",posts:"Посты",newPost:"Написать",publish:"Опубликовать",emptyFeed:"Пока нет постов.",hostTitle:"Страницы",hostHint:"Сохраните HTML и превью.",hostSave:"Сохранить",hostOpen:"Превью",storeTitle:"Заказы",storeHint:"Запрос сайта или бота.",storeSend:"Отправить",futureTitle:"Лаборатория",futureHint:"Идеи следующего шага.",royalTitle:"Статус",royalHint:"Задачи набора.",task1:"Заполните профиль",task2:"Пост в Lumera",task3:"Страница Host",done:"Готово",todo:"Сделать",langTitle:"Выберите язык",langSub:"Можно изменить позже."}
 };
-try { const s = localStorage.getItem("ip_session"); if (s) state.session = JSON.parse(s); } catch {}
+// fill remaining langs with EN + name tweaks
+["zh","ja","hi","ur","pt","it","ko","id","nl","pl","uk","sv","ku","az"].forEach(c=>{if(!PACK[c])PACK[c]=Object.assign({},EN);});
+PACK.zh=Object.assign({},EN,{hero:"有意为之。",sub:"Lumera 套件的安静家园。",signIn:"登录",signUp:"注册",langTitle:"选择语言",langSub:"稍后可在设置中更改。",profile:"资料",save:"保存",posts:"动态",publish:"发布"});
+PACK.ja=Object.assign({},EN,{hero:"意図をもって作る。",sub:"Lumeraスイートの静かなホーム。",signIn:"ログイン",signUp:"登録",langTitle:"言語を選択",langSub:"後から設定で変更できます。",profile:"プロフィール",save:"保存",posts:"投稿",publish:"公開"});
+PACK.pt=Object.assign({},EN,{hero:"Feito com intenção.",sub:"Um lar calmo para a suíte Lumera.",signIn:"Entrar",signUp:"Criar conta",langTitle:"Escolha o idioma",langSub:"Pode mudar depois nas definições."});
+PACK.it=Object.assign({},EN,{hero:"Creato con intenzione.",sub:"Una casa calma per la suite Lumera.",signIn:"Accedi",signUp:"Registrati",langTitle:"Scegli la lingua"});
+PACK.ko=Object.assign({},EN,{hero:"의도를 담아 만들었습니다.",signIn:"로그인",signUp:"가입",langTitle:"언어 선택"});
+PACK.id=Object.assign({},EN,{hero:"Dirancang dengan niat.",signIn:"Masuk",signUp:"Daftar",langTitle:"Pilih bahasa"});
+PACK.nl=Object.assign({},EN,{hero:"Met intentie gemaakt.",signIn:"Inloggen",signUp:"Registreren",langTitle:"Kies je taal"});
+PACK.pl=Object.assign({},EN,{hero:"Stworzone z zamysłem.",signIn:"Zaloguj",signUp:"Rejestracja",langTitle:"Wybierz język"});
+PACK.uk=Object.assign({},EN,{hero:"Створено з наміром.",signIn:"Увійти",signUp:"Реєстрація",langTitle:"Оберіть мову"});
+PACK.sv=Object.assign({},EN,{hero:"Skapat med avsikt.",signIn:"Logga in",signUp:"Skapa konto",langTitle:"Välj språk"});
+PACK.hi=Object.assign({},EN,{hero:"इरादे के साथ बनाया।",signIn:"लॉग इन",signUp:"खाता बनाएँ",langTitle:"भाषा चुनें"});
+PACK.ur=Object.assign({},EN,{hero:"ارادے کے ساتھ بنایا گیا۔",signIn:"لاگ ان",signUp:"اکاؤنٹ بنائیں",langTitle:"زبان منتخب کریں"});
+PACK.ku=Object.assign({},EN,{hero:"Bi mebest hat çêkirin.",signIn:"Têketin",signUp:"Tomar bûn",langTitle:"Zimanê xwe hilbijêre"});
+PACK.az=Object.assign({},EN,{hero:"Niyyətlə yaradılıb.",signIn:"Daxil ol",signUp:"Qeydiyyat",langTitle:"Dili seçin"});
 
-function t(k){
-  const p = I18N[state.lang] || I18N.en;
-  return p[k] || I18N.en[k] || k;
-}
-function hash(s){
-  let h = 2166136261;
-  for (let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return (h >>> 0).toString(16);
-}
+const state={lang:localStorage.getItem("ip_lang")||"",session:null,product:"home",authTab:"login"};
+try{const s=localStorage.getItem("ip_session");if(s)state.session=JSON.parse(s);}catch{}
+
+function t(k){const p=PACK[state.lang]||EN;return p[k]||EN[k]||k;}
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return(h>>>0).toString(16);}
+function needUser(){return!!state.session;}
+
 function setLang(code){
-  state.lang = code;
-  localStorage.setItem("ip_lang", code);
-  document.documentElement.lang = code;
-  document.documentElement.dir = ["fa","ar","ur","he"].includes(code) ? "rtl" : "ltr";
+  state.lang=code;localStorage.setItem("ip_lang",code);
+  document.documentElement.lang=code;
+  document.documentElement.dir=RTL.has(code)?"rtl":"ltr";
   document.getElementById("langGate").classList.add("hidden");
   document.getElementById("app").classList.add("show");
-  document.getElementById("changeLangBtn").textContent = t("lang");
-  document.getElementById("goAccountBtn").textContent = t("settingsAccount");
-  document.getElementById("logoutBtn").textContent = t("logout");
-  document.getElementById("logoutBtn").classList.toggle("hidden", !state.session);
+  document.getElementById("changeLangBtn").textContent=t("lang");
+  document.getElementById("goProfileBtn").textContent=t("profile");
+  document.getElementById("goAuthBtn").textContent=t("account");
+  document.getElementById("logoutBtn").textContent=t("logout");
+  document.getElementById("logoutBtn").classList.toggle("hidden",!state.session);
   render();
 }
 function renderLangList(filter=""){
-  const q = filter.trim().toLowerCase();
-  const list = document.getElementById("langList");
-  list.innerHTML = "";
-  LANGS.filter(l => !q || l.name.toLowerCase().includes(q) || l.region.toLowerCase().includes(q) || l.code.includes(q))
-    .forEach(l => {
-      const b = document.createElement("button");
-      b.type="button"; b.className="lang-item";
-      b.innerHTML = "<span>"+l.name+"</span><small>"+l.region+"</small>";
-      b.onclick = () => setLang(l.code);
-      list.appendChild(b);
-    });
+  const q=filter.trim().toLowerCase();
+  const list=document.getElementById("langList");list.innerHTML="";
+  document.getElementById("langTitle").textContent=(PACK[state.lang]||EN).langTitle||EN.langTitle;
+  document.getElementById("langSub").textContent=(PACK[state.lang]||EN).langSub||EN.langSub;
+  LANGS.filter(l=>!q||l.name.toLowerCase().includes(q)||l.region.toLowerCase().includes(q)||l.code.includes(q)).forEach(l=>{
+    const b=document.createElement("button");b.type="button";b.className="lang-item";
+    b.innerHTML="<span>"+l.name+"</span><small>"+l.region+"</small>";
+    b.onclick=()=>setLang(l.code);list.appendChild(b);
+  });
 }
-function go(product){
-  state.product = product;
-  document.body.dataset.product = ["lumera","host","store","future","royal"].includes(product) ? product : "home";
-  document.querySelectorAll(".side-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.go === product));
-  document.getElementById("settingsMenu").classList.remove("open");
-  render();
-}
-function meta(id){
-  const map = {
-    home: { title: t("home") },
-    lumera: { title: "Lumera", tag:"LUMERA", name:"Lumera", blurb:"Core social canvas inside the light shell.", url:"https://amir112233445566778899.github.io/LUMERA/" },
-    host: { title: "Lumera Host", tag:"HOST", name:"Lumera Host", blurb:"Publish HTML pages from a clean desk.", url:"https://lumera421.github.io/Lumera_-host/" },
-    store: { title: "Lumera Store", tag:"STORE", name:"Lumera Store", blurb:"Studio orders and support without noise.", url:"https://amir112233445566778899.github.io/luvex.com/" },
-    future: { title: "Lumera Future", tag:"FUTURE", name:"Lumera Future", blurb:"Lab space for what comes next.", url:"" },
-    royal: { title: "Lumera Royal", tag:"ROYAL", name:"Lumera Royal", blurb:"Identity across the suite.", url:"" },
-    auth: { title: t("account") }
-  };
-  return map[id] || map.home;
-}
+function go(p){state.product=p;document.body.dataset.product=["lumera","host","store","future","royal"].includes(p)?p:"home";
+  document.querySelectorAll(".side-btn").forEach(b=>b.classList.toggle("active",b.dataset.go===p));
+  document.getElementById("settingsMenu").classList.remove("open");render();}
+
+function storeGet(key,def){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(def));}catch{return def;}}
+function storeSet(key,val){localStorage.setItem(key,JSON.stringify(val));}
+function profileKey(){return state.session?"ip_prof_"+state.session.username:"ip_prof_guest";}
+function feedKey(){return "ip_feed_v1";}
+function pagesKey(){return state.session?"ip_pages_"+state.session.username:"ip_pages_guest";}
+function ordersKey(){return state.session?"ip_orders_"+state.session.username:"ip_orders_guest";}
+
 function renderHome(){
-  return '<div class="panel"><section class="hero"><div><h1>'+t("hero")+'</h1><p>'+t("sub")+'</p><div class="btn-row"><button class="btn btn-dark" data-nav="lumera">'+t("explore")+'</button><button class="btn btn-ghost" data-nav="auth">'+t("account")+'</button></div></div><div class="hero-art" aria-hidden="true"><i></i></div></section><section class="grid3"><article class="card"><h3>'+t("c1")+'</h3><p>'+t("d1")+'</p></article><article class="card"><h3>'+t("c2")+'</h3><p>'+t("d2")+'</p></article><article class="card"><h3>'+t("c3")+'</h3><p>'+t("d3")+'</p></article></section><section class="grid3"><article class="card"><h3>Lumera</h3><p>Core</p><div class="btn-row" style="margin-top:12px"><button class="btn btn-ghost" data-nav="lumera">Open</button></div></article><article class="card"><h3>Host</h3><p>Publish</p><div class="btn-row" style="margin-top:12px"><button class="btn btn-ghost" data-nav="host">Open</button></div></article><article class="card"><h3>Store</h3><p>Orders</p><div class="btn-row" style="margin-top:12px"><button class="btn btn-ghost" data-nav="store">Open</button></div></article></section></div>';
+  return `<div class="panel"><section class="hero"><div><h1>${t("hero")}</h1><p>${t("sub")}</p><div class="btn-row"><button class="btn btn-dark" data-nav="lumera">${t("explore")}</button><button class="btn btn-ghost" data-nav="profile">${t("profile")}</button></div></div><div class="hero-art"><i></i></div></section>
+  <section class="grid3"><article class="card"><h3>${t("c1")}</h3><p>${t("d1")}</p></article><article class="card"><h3>${t("c2")}</h3><p>${t("d2")}</p></article><article class="card"><h3>${t("c3")}</h3><p>${t("d3")}</p></article></section>
+  <section class="grid3"><article class="card"><h3>Lumera</h3><p>Feed</p><div class="btn-row" style="margin-top:10px"><button class="btn btn-ghost" data-nav="lumera">Open</button></div></article>
+  <article class="card"><h3>Host</h3><p>Pages</p><div class="btn-row" style="margin-top:10px"><button class="btn btn-ghost" data-nav="host">Open</button></div></article>
+  <article class="card"><h3>Store</h3><p>Orders</p><div class="btn-row" style="margin-top:10px"><button class="btn btn-ghost" data-nav="store">Open</button></div></article></section></div>`;
 }
-function renderProduct(id){
-  const m = meta(id);
-  const external = m.url || "";
-  return '<div class="panel"><div class="product-banner"><div class="tag">'+m.tag+'</div><h2>'+m.name+'</h2><p>'+m.blurb+'</p><div class="btn-row" style="margin-top:14px">'+(external?'<a class="btn btn-dark" href="'+external+'" target="_blank" rel="noopener">Open live</a>':'')+'<button class="btn btn-ghost" data-nav="home">Ironpetal</button><button class="btn btn-ghost" data-nav="auth">'+t("account")+'</button></div></div><section class="grid3"><article class="card"><h3>Inside shell</h3><p>Stays in Ironpetal with its own accent.</p></article><article class="card"><h3>Live</h3><p>'+(external?'Use Open live for the full product.':'Preview module.')+'</p></article><article class="card"><h3>Nav</h3><p>Left icons never leave the suite.</p></article></section>'+(external?'<iframe title="'+m.name+'" src="'+external+'" style="width:100%;height:62vh;border:1px solid var(--line);border-radius:16px;background:#fff;margin-top:8px"></iframe>':'')+'</div>';
+function gate(){return `<div class="banner"><div class="tag">IRONPETAL</div><h2>${t("needAuth")}</h2><p>${t("sub")}</p><div class="btn-row" style="margin-top:12px"><button class="btn btn-dark" data-nav="auth">${t("signIn")}</button></div></div>`;}
+
+function renderLumera(){
+  if(!needUser())return `<div class="panel">${gate()}</div>`;
+  const feed=storeGet(feedKey(),[]);
+  const items=feed.slice().reverse().map(p=>`<div class="feed-item"><div class="who">@${p.user}</div><div class="txt">${escapeHtml(p.text)}</div></div>`).join("")||`<p class="note">${t("emptyFeed")}</p>`;
+  return `<div class="panel"><div class="banner"><div class="tag">LUMERA</div><h2>Lumera</h2><p>${t("d2")}</p></div>
+  <div class="mod"><h4>${t("posts")}</h4><div class="feed">${items}</div>
+  <div class="composer"><input id="postText" maxlength="280" placeholder="${t("newPost")}"><button class="act" id="postBtn">${t("publish")}</button></div></div></div>`;
+}
+function renderHost(){
+  if(!needUser())return `<div class="panel">${gate()}</div>`;
+  const pages=storeGet(pagesKey(),[]);
+  const last=pages[pages.length-1];
+  return `<div class="panel"><div class="banner"><div class="tag">HOST</div><h2>Lumera Host</h2><p>${t("hostHint")}</p></div>
+  <div class="mod"><h4>${t("hostTitle")}</h4>
+  <div class="field"><label>HTML</label><textarea id="hostCode" rows="8" placeholder="&lt;h1&gt;Hello&lt;/h1&gt;">${last?escapeHtml(last.code):""}</textarea></div>
+  <div class="btn-row"><button class="btn btn-dark" id="hostSave">${t("hostSave")}</button><button class="btn btn-ghost" id="hostPrev">${t("hostOpen")}</button></div>
+  <div id="hostPreview" style="margin-top:12px;border:1px solid var(--line);border-radius:12px;min-height:120px;background:#fff;padding:12px"></div>
+  </div></div>`;
+}
+function renderStore(){
+  if(!needUser())return `<div class="panel">${gate()}</div>`;
+  const orders=storeGet(ordersKey(),[]);
+  const list=orders.slice().reverse().map(o=>`<div class="feed-item"><div class="who">${escapeHtml(o.type)}</div><div class="txt">${escapeHtml(o.note)}</div></div>`).join("")||`<p class="note">—</p>`;
+  return `<div class="panel"><div class="banner"><div class="tag">STORE</div><h2>Lumera Store</h2><p>${t("storeHint")}</p></div>
+  <div class="mod"><h4>${t("storeTitle")}</h4>
+  <div class="field"><label>Type</label><input id="ordType" placeholder="site / bot"></div>
+  <div class="field"><label>Note</label><textarea id="ordNote" rows="3"></textarea></div>
+  <button class="btn btn-dark" id="ordSend">${t("storeSend")}</button>
+  <div class="feed" style="margin-top:12px">${list}</div></div></div>`;
+}
+function renderFuture(){
+  return `<div class="panel"><div class="banner"><div class="tag">FUTURE</div><h2>Lumera Future</h2><p>${t("futureHint")}</p></div>
+  <section class="grid3"><article class="card"><h3>Motion</h3><p>Soft transitions across the suite.</p></article>
+  <article class="card"><h3>Desk sync</h3><p>One Ironpetal account for every module.</p></article>
+  <article class="card"><h3>Quiet AI</h3><p>Helpers that stay optional.</p></article></section></div>`;
+}
+function renderRoyal(){
+  if(!needUser())return `<div class="panel">${gate()}</div>`;
+  const prof=storeGet(profileKey(),{});
+  const feed=storeGet(feedKey(),[]).filter(p=>p.user===state.session.username);
+  const pages=storeGet(pagesKey(),[]);
+  const tasks=[{id:"p",label:t("task1"),ok:!!(prof.display||prof.bio)},{id:"l",label:t("task2"),ok:feed.length>0},{id:"h",label:t("task3"),ok:pages.length>0}];
+  return `<div class="panel"><div class="banner"><div class="tag">ROYAL</div><h2>Lumera Royal</h2><p>${t("royalHint")}</p></div>
+  <div class="mod"><h4>${t("royalTitle")}</h4><div class="list">${tasks.map(x=>`<button type="button"><strong>${x.label}</strong> — ${x.ok?t("done"):t("todo")}</button>`).join("")}</div></div></div>`;
 }
 function renderAuth(){
-  const login = state.authTab === "login";
-  return '<div class="panel auth-shell"><div class="auth-main"><div class="auth-head"><div class="brandline">Ironpetal desk</div><h2>'+(login?t("welcome"):t("join"))+'</h2></div><div class="auth-body"><div class="seg"><button type="button" class="'+(login?"on":"")+'" data-tab="login">'+t("signIn")+'</button><button type="button" class="'+(!login?"on":"")+'" data-tab="register">'+t("signUp")+'</button></div><div class="fld"><label>'+t("user")+'</label><input id="authUser" maxlength="32" autocomplete="username"></div><div class="fld"><label>'+t("pass")+'</label><input id="authPass" type="password" maxlength="128" autocomplete="'+(login?"current-password":"new-password")+'"></div>'+(login?"":'<div class="fld"><label>'+t("pass2")+'</label><input id="authPass2" type="password" maxlength="128" autocomplete="new-password"></div>')+'<div class="auth-msg" id="authMsg"></div><button class="auth-go" id="authSubmit" type="button">'+(login?t("signIn"):t("signUp"))+'</button><p class="auth-note">'+t("note")+(state.session?" · @"+state.session.username:"")+'</p></div></div></div>';
+  const login=state.authTab==="login";
+  return `<div class="panel"><div class="auth-shell"><div class="box"><div class="box-h"><div class="eyebrow">Ironpetal</div><h2>${login?t("welcome"):t("join")}</h2></div><div class="box-b">
+  <div class="seg"><button type="button" class="${login?"on":""}" data-tab="login">${t("signIn")}</button><button type="button" class="${!login?"on":""}" data-tab="register">${t("signUp")}</button></div>
+  <div class="field"><label>${t("user")}</label><input id="authUser" maxlength="32"></div>
+  <div class="field"><label>${t("pass")}</label><input id="authPass" type="password" maxlength="128"></div>
+  ${login?"":`<div class="field"><label>${t("pass2")}</label><input id="authPass2" type="password" maxlength="128"></div>`}
+  <div class="msg" id="authMsg"></div>
+  <button class="btn btn-dark" style="width:100%;justify-content:center" id="authSubmit">${login?t("signIn"):t("signUp")}</button>
+  </div></div></div></div>`;
+}
+function renderProfile(){
+  if(!needUser())return `<div class="panel">${gate()}</div>`;
+  const p=storeGet(profileKey(),{display:"",bio:"",avatar:""});
+  const initial=(state.session.username||"?").slice(0,1).toUpperCase();
+  return `<div class="panel"><div class="prof-shell"><div class="box"><div class="box-h"><div class="eyebrow">@${state.session.username}</div><h2>${t("profile")}</h2></div><div class="box-b">
+  <div class="avatar-row"><div class="avatar" id="avPrev">${p.avatar?`<img src="${escapeAttr(p.avatar)}" alt="">`:initial}</div><div><strong>${p.display||state.session.username}</strong><div class="note">${t("bio")}</div></div></div>
+  <div class="field"><label>${t("display")}</label><input id="pfDisplay" value="${escapeAttr(p.display||"")}" maxlength="40"></div>
+  <div class="field"><label>${t("bio")}</label><textarea id="pfBio" rows="4" maxlength="240">${escapeHtml(p.bio||"")}</textarea></div>
+  <div class="field"><label>${t("avatar")}</label><input id="pfAvatar" value="${escapeAttr(p.avatar||"")}" placeholder="https://..."></div>
+  <div class="msg" id="pfMsg"></div>
+  <button class="btn btn-dark" id="pfSave">${t("save")}</button>
+  </div></div></div></div>`;
+}
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
+function escapeAttr(s){return escapeHtml(s).replace(/\n/g," ");}
+
+function titleOf(p){
+  return ({home:t("home"),lumera:"Lumera",host:"Lumera Host",store:"Lumera Store",future:"Lumera Future",royal:"Lumera Royal",auth:t("account"),profile:t("profile")})[p]||t("home");
 }
 function render(){
-  const view = document.getElementById("view");
-  document.getElementById("topTitle").textContent = meta(state.product).title;
-  if (state.product === "home") view.innerHTML = renderHome();
-  else if (state.product === "auth") view.innerHTML = renderAuth();
-  else view.innerHTML = renderProduct(state.product);
-  view.querySelectorAll("[data-nav]").forEach(el => el.addEventListener("click", () => go(el.getAttribute("data-nav"))));
-  const tabLogin = view.querySelector('[data-tab="login"]');
-  const tabReg = view.querySelector('[data-tab="register"]');
-  if (tabLogin) tabLogin.onclick = () => { state.authTab="login"; render(); };
-  if (tabReg) tabReg.onclick = () => { state.authTab="register"; render(); };
-  const sub = view.querySelector("#authSubmit");
-  if (sub) sub.onclick = submitAuth;
-  document.getElementById("logoutBtn").classList.toggle("hidden", !state.session);
+  const view=document.getElementById("view");
+  document.getElementById("topTitle").textContent=titleOf(state.product);
+  const map={home:renderHome,lumera:renderLumera,host:renderHost,store:renderStore,future:renderFuture,royal:renderRoyal,auth:renderAuth,profile:renderProfile};
+  view.innerHTML=(map[state.product]||renderHome)();
+  view.querySelectorAll("[data-nav]").forEach(el=>el.addEventListener("click",()=>go(el.getAttribute("data-nav"))));
+  bindModule();
+  document.getElementById("logoutBtn").classList.toggle("hidden",!state.session);
+}
+function bindModule(){
+  const postBtn=document.getElementById("postBtn");
+  if(postBtn)postBtn.onclick=()=>{
+    const text=(document.getElementById("postText").value||"").trim();if(!text)return;
+    const feed=storeGet(feedKey(),[]);feed.push({user:state.session.username,text,at:Date.now()});storeSet(feedKey(),feed);render();
+  };
+  const hostSave=document.getElementById("hostSave");
+  if(hostSave)hostSave.onclick=()=>{
+    const code=document.getElementById("hostCode").value||"";
+    const pages=storeGet(pagesKey(),[]);pages.push({code,at:Date.now()});storeSet(pagesKey(),pages);
+    document.getElementById("hostPreview").innerHTML=code;
+  };
+  const hostPrev=document.getElementById("hostPrev");
+  if(hostPrev)hostPrev.onclick=()=>{document.getElementById("hostPreview").innerHTML=document.getElementById("hostCode").value||"";};
+  const ordSend=document.getElementById("ordSend");
+  if(ordSend)ordSend.onclick=()=>{
+    const type=(document.getElementById("ordType").value||"").trim()||"request";
+    const note=(document.getElementById("ordNote").value||"").trim();
+    const orders=storeGet(ordersKey(),[]);orders.push({type,note,at:Date.now()});storeSet(ordersKey(),orders);render();
+  };
+  const tabL=document.querySelector('[data-tab="login"]');const tabR=document.querySelector('[data-tab="register"]');
+  if(tabL)tabL.onclick=()=>{state.authTab="login";render();};
+  if(tabR)tabR.onclick=()=>{state.authTab="register";render();};
+  const authSubmit=document.getElementById("authSubmit");
+  if(authSubmit)authSubmit.onclick=submitAuth;
+  const pfSave=document.getElementById("pfSave");
+  if(pfSave)pfSave.onclick=()=>{
+    const display=(document.getElementById("pfDisplay").value||"").trim();
+    const bio=(document.getElementById("pfBio").value||"").trim();
+    const avatar=(document.getElementById("pfAvatar").value||"").trim();
+    storeSet(profileKey(),{display,bio,avatar});
+    const m=document.getElementById("pfMsg");m.className="msg ok";m.textContent=t("saved");
+  };
 }
 function submitAuth(){
-  const msg = document.getElementById("authMsg");
-  const u = (document.getElementById("authUser").value || "").trim().toLowerCase();
-  const p = document.getElementById("authPass").value || "";
-  if (!u) { msg.textContent = t("needUser"); return; }
-  if (!p) { msg.textContent = t("needPass"); return; }
-  if (state.authTab === "register") {
-    const p2 = (document.getElementById("authPass2") || {}).value || "";
-    if (p !== p2) { msg.textContent = t("mismatch"); return; }
-  }
-  let users = {};
-  try { users = JSON.parse(localStorage.getItem("ip_users_v1") || "{}"); } catch {}
-  const key = hash(u);
-  if (state.authTab === "register") {
-    if (users[key]) { msg.textContent = t("exists"); return; }
-    users[key] = { u, h: hash(u + ":" + p), at: Date.now() };
-    localStorage.setItem("ip_users_v1", JSON.stringify(users));
-    state.session = { username: u };
-    localStorage.setItem("ip_session", JSON.stringify(state.session));
-    msg.className = "auth-msg ok";
-    msg.textContent = t("okUp");
-  } else {
-    const row = users[key];
-    if (!row || row.h !== hash(u + ":" + p)) { msg.textContent = t("bad"); return; }
-    state.session = { username: u };
-    localStorage.setItem("ip_session", JSON.stringify(state.session));
-    msg.className = "auth-msg ok";
-    msg.textContent = t("okIn");
+  const msg=document.getElementById("authMsg");
+  const u=(document.getElementById("authUser").value||"").trim().toLowerCase();
+  const p=document.getElementById("authPass").value||"";
+  if(!u){msg.textContent=t("needUser");return;}
+  if(!p){msg.textContent=t("needPass");return;}
+  if(state.authTab==="register"){const p2=(document.getElementById("authPass2")||{}).value||"";if(p!==p2){msg.textContent=t("mismatch");return;}}
+  let users={};try{users=JSON.parse(localStorage.getItem("ip_users_v1")||"{}");}catch{}
+  const key=hash(u);
+  if(state.authTab==="register"){
+    if(users[key]){msg.textContent=t("exists");return;}
+    users[key]={u,h:hash(u+":"+p),at:Date.now()};localStorage.setItem("ip_users_v1",JSON.stringify(users));
+    state.session={username:u};localStorage.setItem("ip_session",JSON.stringify(state.session));
+    msg.className="msg ok";msg.textContent=t("okUp");
+  }else{
+    const row=users[key];if(!row||row.h!==hash(u+":"+p)){msg.textContent=t("bad");return;}
+    state.session={username:u};localStorage.setItem("ip_session",JSON.stringify(state.session));
+    msg.className="msg ok";msg.textContent=t("okIn");
   }
   document.getElementById("logoutBtn").classList.remove("hidden");
 }
 
-document.getElementById("langSearch").addEventListener("input", e => renderLangList(e.target.value));
-document.querySelectorAll(".side-btn").forEach(btn => btn.addEventListener("click", () => go(btn.dataset.go)));
-document.getElementById("menuBtn").addEventListener("click", e => {
-  e.stopPropagation();
-  document.getElementById("settingsMenu").classList.toggle("open");
-});
-document.addEventListener("click", e => {
-  if (!e.target.closest(".menu-wrap")) document.getElementById("settingsMenu").classList.remove("open");
-});
-document.getElementById("changeLangBtn").addEventListener("click", () => {
-  document.getElementById("settingsMenu").classList.remove("open");
-  document.getElementById("app").classList.remove("show");
-  document.getElementById("langGate").classList.remove("hidden");
-  renderLangList();
-});
-document.getElementById("goAccountBtn").addEventListener("click", () => go("auth"));
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  state.session = null;
-  localStorage.removeItem("ip_session");
-  go("auth");
-});
-
+document.getElementById("langSearch").addEventListener("input",e=>renderLangList(e.target.value));
+document.querySelectorAll(".side-btn").forEach(btn=>btn.addEventListener("click",()=>go(btn.dataset.go)));
+document.getElementById("menuBtn").addEventListener("click",e=>{e.stopPropagation();document.getElementById("settingsMenu").classList.toggle("open");});
+document.addEventListener("click",e=>{if(!e.target.closest(".menu-wrap"))document.getElementById("settingsMenu").classList.remove("open");});
+document.getElementById("changeLangBtn").addEventListener("click",()=>{document.getElementById("settingsMenu").classList.remove("open");document.getElementById("app").classList.remove("show");document.getElementById("langGate").classList.remove("hidden");renderLangList();});
+document.getElementById("goProfileBtn").addEventListener("click",()=>go("profile"));
+document.getElementById("goAuthBtn").addEventListener("click",()=>go("auth"));
+document.getElementById("logoutBtn").addEventListener("click",()=>{state.session=null;localStorage.removeItem("ip_session");go("auth");});
 renderLangList();
-if (state.lang) setLang(state.lang);
+if(state.lang)setLang(state.lang);
 </script>
 </body>
 </html>
