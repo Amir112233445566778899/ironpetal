@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow">
+<title>Ironpetal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4c4 6 10 8 10 14a10 10 0 1 1-20 0c0-6 6-8 10-14z' fill='%233f3a36'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1714;--muted:#6f675f;--line:rgba(26,23,20,.1);
+  --paper:rgba(251,247,241,.9);--sidebar:76px;
+  --font:"IBM Plex Sans",system-ui,sans-serif;--serif:"Cormorant Garamond",Georgia,serif;
+  --shadow:0 16px 40px rgba(40,30,20,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--font);color:var(--ink);overflow:hidden;
+  background:#efe6db url("bg.png") center/cover no-repeat fixed;
+}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.hidden{display:none!important}
+
+#langGate{
+  position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+  padding:20px;background:rgba(239,230,219,.93);backdrop-filter:blur(8px);
+}
+#langGate.hidden{display:none}
+.lang-box{
+  width:min(520px,100%);background:var(--paper);border:1px solid var(--line);
+  border-radius:22px;box-shadow:var(--shadow);padding:26px 20px 18px;
+}
+.lang-box h1{font-family:var(--serif);font-size:clamp(28px,4vw,38px);font-weight:500;margin-bottom:8px}
+.lang-box p{color:var(--muted);font-size:14px;margin-bottom:14px}
+.lang-search{width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:10px;outline:none}
+.lang-list{max-height:280px;overflow:auto;display:grid;gap:4px}
+.lang-item{text-align:start;padding:10px 12px;border-radius:10px;display:flex;justify-content:space-between;gap:8px}
+.lang-item:hover{background:rgba(26,23,20,.05)}
+.lang-item small{color:var(--muted)}
+
+#app{display:none;height:100%;position:relative;z-index:1}
+#app.show{display:flex}
+
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;height:100%;
+  border-inline-end:1px solid var(--line);
+  background:rgba(251,247,241,.88);backdrop-filter:blur(12px);
+  display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:5px;z-index:5;
+}
+.brand{width:38px;height:38px;border-radius:12px;margin-bottom:6px;background:#fff;border:1px solid var(--line);display:grid;place-items:center}
+.side-btn{
+  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;position:relative;
+  transition:.15s;
+}
+.side-btn:hover{background:rgba(26,23,20,.05)}
+.side-btn.active{background:#fff;border:1px solid var(--line);box-shadow:0 8px 18px rgba(40,30,20,.06)}
+.side-btn .tip{
+  position:absolute;inset-inline-start:52px;top:50%;transform:translateY(-50%);
+  background:var(--ink);color:#fff;font-size:11px;padding:5px 8px;border-radius:7px;
+  opacity:0;pointer-events:none;white-space:nowrap;z-index:40;
+}
+.side-btn:hover .tip{opacity:1}
+.side-spacer{flex:1}
+
+.main{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;overflow:hidden}
+.topbar{
+  height:54px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;border-bottom:1px solid var(--line);
+  background:rgba(251,247,241,.82);backdrop-filter:blur(12px);position:relative;z-index:50;
+}
+.top-title{font-family:var(--serif);font-size:20px;font-weight:500}
+.menu-wrap{position:relative;z-index:60}
+.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
+.menu{
+  position:absolute;top:calc(100% + 6px);inset-inline-end:0;width:210px;
+  background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+  padding:6px;display:none;z-index:80;
+}
+.menu.open{display:block}
+.menu button{width:100%;text-align:start;padding:10px 11px;border-radius:9px;font-size:13px}
+.menu button:hover{background:rgba(26,23,20,.05)}
+
+.stage{flex:1;position:relative;overflow:hidden;background:rgba(255,252,247,.35)}
+.stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.home-panel{
+  position:absolute;inset:0;overflow:auto;padding:28px 24px;
+  display:none;
+}
+.home-panel.show{display:block}
+.home-panel h1{font-family:var(--serif);font-size:clamp(32px,5vw,48px);font-weight:500;margin-bottom:10px}
+.home-panel p{color:var(--muted);max-width:50ch;line-height:1.55;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.card{
+  background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;
+  transition:.18s;
+}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.card h3{font-family:var(--serif);font-size:20px;margin-bottom:6px}
+.card p{font-size:13px;color:var(--muted);margin:0}
+.loading{
+  position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  background:rgba(251,247,241,.7);z-index:3;font-size:14px;color:var(--muted);
+}
+.loading.show{display:flex}
+</style>
+</head>
+<body>
+<div id="langGate">
+  <div class="lang-box">
+    <h1>Choose your language</h1>
+    <p>Select a language. Suite apps keep their own UI language where built-in.</p>
+    <input class="lang-search" id="langSearch" type="search" placeholder="Search language or country…">
+    <div class="lang-list" id="langList"></div>
+  </div>
+</div>
+
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand" title="Ironpetal">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c3 4 7 5.5 7 10a7 7 0 1 1-14 0c0-4.5 4-6 7-10z"/></svg>
+    </div>
+    <button class="side-btn active" data-mod="home" aria-label="Home">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-5v-5H10v5H5a1 1 0 0 1-1-1v-8.5z"/></svg>
+      <span class="tip">Home</span>
+    </button>
+    <button class="side-btn" data-mod="lumera" aria-label="Lumera">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5b4b8a" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
+      <span class="tip">Lumera</span>
+    </button>
+    <button class="side-btn" data-mod="host" aria-label="Host">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f5d8c" stroke-width="1.6"><rect x="4" y="4" width="16" height="6" rx="1.5"/><rect x="4" y="14" width="16" height="6" rx="1.5"/></svg>
+      <span class="tip">Host</span>
+    </button>
+    <button class="side-btn" data-mod="store" aria-label="Store / Luvex">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3d6b4f" stroke-width="1.6"><path d="M6 8h12l-1 11H7L6 8z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
+      <span class="tip">Store</span>
+    </button>
+    <button class="side-btn" data-mod="forge" aria-label="Rusted Forge">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+      <span class="tip">Forge</span>
+    </button>
+    <button class="side-btn" data-mod="luvex" aria-label="Luvex">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="1.6"><path d="M12 3l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V7l7-4z"/></svg>
+      <span class="tip">Luvex</span>
+    </button>
+    <div class="side-spacer"></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="top-title" id="topTitle">Ironpetal</div>
+      <div class="menu-wrap">
+        <button class="icon-btn" id="menuBtn" aria-label="menu">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <div class="menu" id="settingsMenu">
+          <button type="button" id="changeLangBtn">Change language</button>
+          <button type="button" id="reloadModBtn">Reload module</button>
+        </div>
+      </div>
+    </header>
+    <div class="stage">
+      <div class="loading" id="loading">Loading module…</div>
+      <div class="home-panel show" id="homePanel">
+        <h1>Ironpetal</h1>
+        <p>Full suite modules load inside this shell — complete HTML snapshots of each product, not simplified previews.</p>
+        <div class="grid">
+          <div class="card" data-mod="lumera"><h3>Lumera</h3><p>Full social platform HTML</p></div>
+          <div class="card" data-mod="host"><h3>Lumera Host</h3><p>Full host desk HTML</p></div>
+          <div class="card" data-mod="store"><h3>Store / Luvex</h3><p>Full store HTML</p></div>
+          <div class="card" data-mod="forge"><h3>Rusted Forge</h3><p>Full forge HTML</p></div>
+          <div class="card" data-mod="luvex"><h3>Luvex</h3><p>Verification desk HTML</p></div>
+        </div>
+      </div>
+      <iframe id="modFrame" title="module" class="hidden" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads allow-storage-access-by-user-activation"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+const LANGS = [
+  {code:"en",name:"English",region:"Global"},
+  {code:"fa",name:"فارسی",region:"Iran"},
+  {code:"de",name:"Deutsch",region:"Germany"},
+  {code:"fr",name:"Français",region:"France"},
+  {code:"es",name:"Español",region:"Spain"},
+  {code:"ar",name:"العربية",region:"Middle East"},
+  {code:"tr",name:"Türkçe",region:"Türkiye"},
+  {code:"ru",name:"Русский",region:"Russia"},
+  {code:"zh",name:"中文",region:"China"},
+  {code:"ja",name:"日本語",region:"Japan"},
+  {code:"hi",name:"हिन्दी",region:"India"},
+  {code:"ur",name:"اردو",region:"Pakistan"},
+  {code:"pt",name:"Português",region:"Brazil"},
+  {code:"it",name:"Italiano",region:"Italy"},
+  {code:"ko",name:"한국어",region:"Korea"},
+  {code:"id",name:"Bahasa Indonesia",region:"Indonesia"}
+];
+const RTL = new Set(["fa","ar","ur","he"]);
+
+const MODULES = {
+  home: { title: "Ironpetal", src: null },
+  lumera: { title: "Lumera", src: "modules/lumera.html" },
+  host: { title: "Lumera Host", src: "modules/host.html" },
+  store: { title: "Lumera Store", src: "modules/luvex.html" },
+  forge: { title: "Rusted Forge", src: "modules/forge.html" },
+  luvex: { title: "Luvex", src: "modules/luvex2.html" }
+};
+
+const state = {
+  lang: localStorage.getItem("ip_lang") || "",
+  mod: "home"
+};
+
+function setLang(code) {
+  state.lang = code;
+  localStorage.setItem("ip_lang", code);
+  document.documentElement.lang = code;
+  document.documentElement.dir = RTL.has(code) ? "rtl" : "ltr";
+  document.getElementById("langGate").classList.add("hidden");
+  document.getElementById("app").classList.add("show");
+}
+
+function renderLangList(filter) {
+  const q = (filter || "").trim().toLowerCase();
+  const list = document.getElementById("langList");
+  list.innerHTML = "";
+  LANGS.filter(l => !q || l.name.toLowerCase().includes(q) || l.region.toLowerCase().includes(q) || l.code.includes(q))
+    .forEach(l => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "lang-item";
+      b.innerHTML = "<span>" + l.name + "</span><small>" + l.region + "</small>";
+      b.onclick = () => setLang(l.code);
+      list.appendChild(b);
+    });
+}
+
+function openMod(id) {
+  if (!MODULES[id]) return;
+  state.mod = id;
+  document.querySelectorAll(".side-btn").forEach(b => b.classList.toggle("active", b.dataset.mod === id));
+  document.getElementById("topTitle").textContent = MODULES[id].title;
+  document.getElementById("settingsMenu").classList.remove("open");
+
+  const home = document.getElementById("homePanel");
+  const frame = document.getElementById("modFrame");
+  const loading = document.getElementById("loading");
+
+  if (id === "home" || !MODULES[id].src) {
+    frame.classList.add("hidden");
+    frame.removeAttribute("src");
+    home.classList.add("show");
+    loading.classList.remove("show");
+    return;
+  }
+
+  home.classList.remove("show");
+  frame.classList.remove("hidden");
+  loading.classList.add("show");
+
+  const src = MODULES[id].src + "?v=" + Date.now();
+  frame.onload = () => loading.classList.remove("show");
+  frame.onerror = () => {
+    loading.textContent = "Failed to load module file. Upload modules/ folder to GitHub Pages.";
+    loading.classList.add("show");
+  };
+  frame.src = src;
+}
+
+document.getElementById("langSearch").addEventListener("input", e => renderLangList(e.target.value));
+document.querySelectorAll(".side-btn").forEach(btn => btn.addEventListener("click", () => openMod(btn.dataset.mod)));
+document.querySelectorAll(".card[data-mod]").forEach(card => card.addEventListener("click", () => openMod(card.dataset.mod)));
+document.getElementById("menuBtn").addEventListener("click", e => {
+  e.stopPropagation();
+  document.getElementById("settingsMenu").classList.toggle("open");
+});
+document.addEventListener("click", e => {
+  if (!e.target.closest(".menu-wrap")) document.getElementById("settingsMenu").classList.remove("open");
+});
+document.getElementById("changeLangBtn").addEventListener("click", () => {
+  document.getElementById("settingsMenu").classList.remove("open");
+  document.getElementById("app").classList.remove("show");
+  document.getElementById("langGate").classList.remove("hidden");
+  renderLangList();
+});
+document.getElementById("reloadModBtn").addEventListener("click", () => {
+  document.getElementById("settingsMenu").classList.remove("open");
+  openMod(state.mod);
+});
+
+renderLangList();
+if (state.lang) setLang(state.lang);
+</script>
+</body>
+</html>
