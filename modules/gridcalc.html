@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gridcalc</title>
+<script>(function(){try{var l=localStorage.getItem("ip_lang")||"en";var m={zh:"zh-CN"};var c=m[l]||l;document.cookie="googtrans=/auto/"+c+";path=/";}catch(e){}})();</script>
+<style>
+:root{--accent:#2f5d8c;--bg:#fbf7f1;--ink:#1a1714;--muted:#6f675f;--line:rgba(26,23,20,.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:20px}
+h1{font-size:28px;font-weight:600;margin-bottom:6px}
+.sub{color:var(--muted);margin-bottom:18px;font-size:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+button{background:var(--ink);color:#fff;border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font:inherit}
+input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:6px 0 10px;font:inherit;font-size:18px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.tag{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px}
+</style></head><body>
+<div class="tag">IRONPETAL LAB</div>
+<h1>Gridcalc</h1>
+<p class="sub">Built inside Ironpetal</p>
+<div class="card">
+<input id="e" placeholder="e.g. 12*34+5">
+<div class="row">
+<button id="go">Calculate</button>
+<button id="c" style="background:#fff;color:#1a1714;border:1px solid rgba(26,23,20,.1)">C</button>
+</div>
+<p id="r" style="font-size:28px;margin-top:12px">0</p>
+</div>
+<script>
+document.getElementById('go').onclick=function(){
+  try{
+    var v=document.getElementById('e').value.replace(/[^0-9+\-*/().%\s]/g,'');
+    document.getElementById('r').textContent=Function('"use strict";return ('+v+')')();
+  }catch(e){document.getElementById('r').textContent='Error';}
+};
+document.getElementById('c').onclick=function(){document.getElementById('e').value='';document.getElementById('r').textContent='0';};
+window.addEventListener('message',function(e){
+  if(e.data&&e.data.type==='ip-lang'&&window.ipForceTranslate) window.ipForceTranslate(e.data.lang);
+});
+</script>
+<div id="google_translate_element" style="display:none"></div>
+<script>
+(function(){
+  function lang(){try{return localStorage.getItem('ip_lang')||'en';}catch(e){return 'en';}}
+  window.googleTranslateElementInit=function(){
+    new google.translate.TranslateElement({pageLanguage:'auto',includedLanguages:'en,fa,ja,tr,de,fr,es,ar,ru,zh-CN,hi,ur,pt,it,ko,id,nl,pl',autoDisplay:false},'google_translate_element');
+    setTimeout(function(){var s=document.querySelector('select.goog-te-combo');if(s){s.value=lang();s.dispatchEvent(new Event('change'));}},300);
+  };
+  var s=document.createElement('script');s.src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';document.head.appendChild(s);
+})();
+</script>
+</body></html>

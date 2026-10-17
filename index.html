@@ -207,9 +207,18 @@ const state={lang:localStorage.getItem("ip_lang")||"",mod:"home"};
 
 function forceGoogleLang(lang){
   const c=gtCode(lang);
+  try{
+    document.cookie="googtrans=/auto/"+c+";path=/";
+    document.cookie="googtrans=/auto/"+c+";path=/;domain="+location.hostname;
+  }catch(e){}
   const sel=document.querySelector("select.goog-te-combo");
-  if(!sel){setTimeout(function(){forceGoogleLang(lang);},500);return;}
+  if(!sel){setTimeout(function(){forceGoogleLang(lang);},200);return;}
   if(sel.value!==c){sel.value=c;sel.dispatchEvent(new Event("change"));}
+  // second pulse for stubborn widgets
+  setTimeout(function(){
+    const s2=document.querySelector("select.goog-te-combo");
+    if(s2&&s2.value!==c){s2.value=c;s2.dispatchEvent(new Event("change"));}
+  },600);
 }
 function googleTranslateElementInit(){
   new google.translate.TranslateElement({
@@ -223,21 +232,27 @@ window.googleTranslateElementInit=googleTranslateElementInit;
 
 function injectFrameTranslate(frame,lang){
   try{
-    frame.contentWindow.postMessage({type:"ip-lang",lang:lang,dir:RTL.has(lang)?"rtl":"ltr"},"*");
+    const c=gtCode(lang);
     try{frame.contentWindow.localStorage.setItem("ip_lang",lang);}catch(e){}
+    frame.contentWindow.postMessage({type:"ip-lang",lang:lang,dir:RTL.has(lang)?"rtl":"ltr"},"*");
     if(typeof frame.contentWindow.ipForceTranslate==="function") frame.contentWindow.ipForceTranslate(lang);
     const doc=frame.contentDocument;
-    if(doc&&!doc.getElementById("ip-gt-src")){
+    if(!doc) return;
+    try{doc.cookie="googtrans=/auto/"+c+";path=/";}catch(e){}
+    if(!doc.getElementById("ip-gt-src")){
       const s=doc.createElement("script");s.id="ip-gt-src";
       s.src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       doc.head.appendChild(s);
     }
-    setTimeout(function(){
+    function pulse(){
       try{
-        const sel=doc&&doc.querySelector("select.goog-te-combo");
-        if(sel){sel.value=gtCode(lang);sel.dispatchEvent(new Event("change"));}
+        const sel=doc.querySelector("select.goog-te-combo");
+        if(sel){sel.value=c;sel.dispatchEvent(new Event("change"));}
       }catch(e){}
-    },1200);
+    }
+    setTimeout(pulse,250);
+    setTimeout(pulse,700);
+    setTimeout(pulse,1500);
   }catch(e){}
 }
 
