@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://translate.google.com https://translate.googleapis.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://www.gstatic.com; font-src https://fonts.gstatic.com data:; img-src * data: blob:; connect-src https: wss:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<script>(function(){try{var l=localStorage.getItem('ip_lang')||'en';var m={zh:'zh-CN',he:'iw'};var c=m[l]||l;document.cookie='googtrans=/auto/'+c+';path=/';}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OpenVex</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--field:#0f1012;--line:#2b2e33;--text:#f2f3f4;--muted:#9a9ea6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Vazirmatn,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+.brand{font-weight:800}
+.btn{background:#fff;color:#000;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn.ghost{background:transparent;color:#fff;border:1px solid var(--line)}
+.wrap{max-width:720px;margin:0 auto;padding:22px 16px}
+h1{font-size:28px;margin-bottom:8px}
+p{color:var(--muted);line-height:1.55;margin-bottom:12px}
+.card{background:var(--field);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.goog-te-banner-frame,.skiptranslate,.goog-te-gadget{display:none!important}body{top:0!important}
+</style></head><body>
+<header class="top"><div class="brand">OpenVex</div><div class="row"><button class="btn ghost" id="out" type="button">Logout</button></div></header>
+<main class="wrap">
+<h1 id="hi">Welcome</h1>
+<p>Static OpenVex desk inside Ironpetal (no PHP server required).</p>
+<div class="card"><h3>Session</h3><p id="info">—</p></div>
+<div class="card"><h3>Maker</h3><p>Mohammad Erfan · Studio @openvex</p>
+<p><a style="color:#8cf" href="https://rubika.ir/openvex" target="_blank" rel="noopener">Rubika channel</a></p></div>
+</main>
+<script>
+(function(){
+  var u=null;try{u=JSON.parse(localStorage.getItem("openvex_user")||"null");}catch(e){}
+  if(!u||!localStorage.getItem("openvex_session")){location.href="openvex.html";return;}
+  document.getElementById("hi").textContent="Welcome, "+(u.username||"user");
+  document.getElementById("info").textContent="User: "+(u.username||"—")+" · local session";
+  document.getElementById("out").onclick=function(){try{localStorage.removeItem("openvex_session");}catch(e){}location.href="openvex.html";};
+})();
+</script>
+<div id="google_translate_element" style="display:none"></div>
+<script>
+(function(){
+  var map={zh:"zh-CN"};
+  function code(l){return map[l]||l||"en";}
+  function lang(){try{return localStorage.getItem("ip_lang")||"en";}catch(e){return "en";}}
+  try{var c=code(lang());document.cookie="googtrans=/auto/"+c+";path=/";}catch(e){}
+  window.googleTranslateElementInit=function(){
+    new google.translate.TranslateElement({pageLanguage:"auto",includedLanguages:"en,fa,ja,tr,de,fr,es,ar,ru,zh-CN,hi,ur,pt,it,ko,id,nl,pl",autoDisplay:false},"google_translate_element");
+    setTimeout(function(){var s=document.querySelector("select.goog-te-combo");if(s){s.value=code(lang());s.dispatchEvent(new Event("change"));}},300);
+  };
+  var s=document.createElement("script");s.src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";document.head.appendChild(s);
+})();
+</script>
+
+<!-- IRONPETAL EMBED BAR -->
+<style id="ip-bar-css">
+#ipEmbedBar{position:fixed;z-index:2147483646;top:10px;inset-inline-start:10px;display:flex;gap:6px;align-items:center;
+background:rgba(26,23,20,.82);color:#f7f1e8;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);
+border-radius:999px;padding:6px 8px 6px 10px;font:600 11px/1 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#ipEmbedBar button,#ipEmbedBar a{appearance:none;border:0;background:rgba(255,255,255,.1);color:inherit;border-radius:999px;
+padding:6px 10px;cursor:pointer;text-decoration:none;font:inherit}
+#ipEmbedBar button:hover,#ipEmbedBar a:hover{background:rgba(255,255,255,.18)}
+#ipEmbedBar .dot{width:7px;height:7px;border-radius:50%;background:#c4a484;margin-inline-end:2px}
+</style>
+<div id="ipEmbedBar"><span class="dot"></span><span>Ironpetal</span>
+<button type="button" id="ipHomeBtn">Home</button>
+<button type="button" id="ipLangBtn">Lang</button>
+</div>
+<script>
+(function(){
+  function goHome(){
+    try{
+      if(window.top && window.top!==window){window.top.postMessage({type:'ip-home'},'*');return;}
+    }catch(e){}
+    var base=location.pathname.split('/modules/')[0]||'';
+    location.href=(base&&base!==location.pathname?base+'/':'../')+'index.html';
+  }
+  var b=document.getElementById('ipHomeBtn'); if(b) b.onclick=goHome;
+  var l=document.getElementById('ipLangBtn');
+  if(l) l.onclick=function(){
+    try{if(window.top&&window.top!==window){window.top.postMessage({type:'ip-lang-open'},'*');return;}}catch(e){}
+  };
+  // public auto-login fill
+  try{
+    var pub=localStorage.getItem('ip_public_login');
+    if(pub){
+      var d=JSON.parse(pub);
+      localStorage.removeItem('ip_public_login');
+      setTimeout(function(){
+        var users=document.querySelectorAll('input[type=text],input[type=email],input:not([type]),input[name*=user],input[id*=user],input[id*=User],input[placeholder]');
+        var passes=document.querySelectorAll('input[type=password]');
+        var u=null;
+        users.forEach(function(el){
+          var id=(el.id||'')+(el.name||'')+(el.placeholder||'');
+          if(/user|email|نام|login|id/i.test(id) && !u) u=el;
+        });
+        if(!u && users[0]) u=users[0];
+        if(u){u.value=d.user||'ironpetal'; u.dispatchEvent(new Event('input',{bubbles:true}));}
+        if(passes[0]){passes[0].value=d.pass||'ironpetal'; passes[0].dispatchEvent(new Event('input',{bubbles:true}));}
+      },600);
+    }
+  }catch(e){}
+})();
+</script>
+
+
+<script>
+(function(){
+  if(window.__ipGtFast) return; window.__ipGtFast=true;
+  var map={zh:'zh-CN',he:'iw'};
+  function code(l){l=(l||'en').toLowerCase();return map[l]||l;}
+  function lang(){try{return localStorage.getItem('ip_lang')||'en';}catch(e){return 'en';}}
+  function applyCookie(l){
+    var c=code(l);
+    try{document.cookie='googtrans=/auto/'+c+';path=/';document.cookie='googtrans=/auto/'+c+';path=/;domain='+location.hostname;}catch(e){}
+  }
+  applyCookie(lang());
+  window.ipForceTranslate=function(l){
+    try{localStorage.setItem('ip_lang',l);}catch(e){}
+    applyCookie(l);
+    var tries=0;
+    (function pulse(){
+      var sel=document.querySelector('select.goog-te-combo');
+      if(sel){sel.value=code(l);sel.dispatchEvent(new Event('change'));}
+      else if(tries++<20) setTimeout(pulse,200);
+    })();
+  };
+  window.googleTranslateElementInit=function(){
+    try{
+      new google.translate.TranslateElement({pageLanguage:'auto',includedLanguages:'en,fa,ja,tr,de,fr,es,ar,ru,zh-CN,hi,ur,pt,it,ko,id,nl,pl,az,sv,uk,th,vi',autoDisplay:false,multilanguagePage:true},'google_translate_element');
+      setTimeout(function(){window.ipForceTranslate(lang());},200);
+      setTimeout(function(){window.ipForceTranslate(lang());},800);
+    }catch(e){}
+  };
+  if(!document.getElementById('google_translate_element')){
+    var d=document.createElement('div');d.id='google_translate_element';d.style.display='none';document.body?document.body.appendChild(d):document.documentElement.appendChild(d);
+  }
+  if(!document.getElementById('ip-gt-src')){
+    var s=document.createElement('script');s.id='ip-gt-src';
+    s.src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    (document.head||document.documentElement).appendChild(s);
+  }
+  window.addEventListener('message',function(e){if(e.data&&e.data.type==='ip-lang'&&e.data.lang) window.ipForceTranslate(e.data.lang);});
+  // restyle hide banner
+  var st=document.createElement('style');st.textContent='.goog-te-banner-frame,.skiptranslate,.goog-te-gadget{display:none!important}body{top:0!important}';document.head.appendChild(st);
+})();
+</script>
+
+</body></html>

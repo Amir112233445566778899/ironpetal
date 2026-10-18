@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://unpkg.com https://cdnjs.cloudflare.com https://translate.google.com https://translate.googleapis.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com data:; img-src * data: blob:; connect-src https: wss:; frame-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Ironpetal — suite hub for Lumera, Host, Store, Luvex, Rusted Forge and OpenVex. Elegant multi-product workspace.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ironpetal.devs.li/">
+<meta property="og:title" content="Ironpetal">
+<meta property="og:description" content="Crafted suite hub for Lumera products and studio tools.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ironpetal.devs.li/">
+<meta name="twitter:card" content="summary">
+<title>Ironpetal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1714;--muted:#6f675f;--line:rgba(26,23,20,.12);--paper:rgba(251,247,241,.95);--sidebar:72px;--font:"IBM Plex Sans",system-ui,sans-serif;--serif:"Cormorant Garamond",Georgia,serif;--shadow:0 18px 50px rgba(40,30,20,.1);--ok:#0f766e;--bad:#a33}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{font-family:var(--font);color:var(--ink);overflow:hidden;background:#efe6db url("bg.png") center/cover no-repeat fixed}
+button,input,textarea{font:inherit;color:inherit}button{cursor:pointer;border:0;background:none}a{color:inherit}
+.goog-te-banner-frame,.skiptranslate,.goog-te-gadget{display:none!important}body{top:0!important}
+#langGate,#onboard{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(239,230,219,.96)}
+#langGate.hide,#onboard.hide{display:none}
+.box{width:min(520px,100%);background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow)}
+.box h1,.box h2{font-family:var(--serif);font-weight:500;margin-bottom:8px}.box h1{font-size:32px}.box h2{font-size:26px}
+.box p,.muted{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:10px}
+.field,.search{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;margin:6px 0 10px;background:#fff}
+.lang-list{max-height:260px;overflow:auto;display:grid;gap:4px}
+.lang-item{text-align:left;padding:10px 12px;border-radius:10px;display:flex;justify-content:space-between}
+.lang-item:hover{background:rgba(0,0,0,.05)}.lang-item small{color:var(--muted)}
+#app{display:none;height:100%}#app.show{display:flex}
+.sidebar{width:var(--sidebar);border-right:1px solid var(--line);background:rgba(251,247,241,.92);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:6px;overflow-y:auto}
+.side-btn{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;position:relative}
+.sb-ico{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;letter-spacing:.02em}.sb-ico.neutral{background:#1a1714;color:#fff;font-size:14px;font-weight:500}
+.side-btn:hover,.side-btn.on{background:#fff;border:1px solid var(--line)}
+.side-btn .tip{position:absolute;left:54px;top:50%;transform:translateY(-50%);background:#111;color:#fff;font-size:11px;padding:5px 8px;border-radius:7px;opacity:0;white-space:nowrap;z-index:20}
+.side-btn:hover .tip{opacity:1}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;height:100%}
+.top{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--line);background:rgba(251,247,241,.92)}
+.title{font-family:var(--serif);font-size:20px}
+.icon{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#fff}
+.menu-wrap{position:relative}.menu{display:none;position:absolute;right:0;top:42px;width:220px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:var(--shadow);z-index:50}
+.menu.open{display:block}.menu button{display:block;width:100%;text-align:left;padding:10px;border-radius:8px;font-size:13px}
+.stage{flex:1;position:relative;overflow:hidden}
+.view{position:absolute;inset:0;overflow:auto;display:none;padding:18px}.view.on{display:block}
+.hero{max-width:1040px;margin:0 auto 14px}.hero h1{font-family:var(--serif);font-size:clamp(30px,5vw,46px);font-weight:500;margin-bottom:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:500}
+.btn-dark{background:#1a1714;color:#fff}.btn-soft{background:#fff;border:1px solid var(--line)}
+.btn-blue{background:linear-gradient(120deg,#2f5d8c,#5b4b8a);color:#fff}.btn:disabled{opacity:.45;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;max-width:1040px;margin:0 auto}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.card h3{font-family:var(--serif);font-size:22px;margin-bottom:6px}
+.creator{font-size:12px;padding:8px;border-radius:10px;background:rgba(255,255,255,.75);border:1px solid var(--line);margin-bottom:10px}
+.comment{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px;word-break:break-word}
+.notice{max-width:1040px;margin:0 auto 12px;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.75);font-size:13px;color:var(--muted)}
+.sec{max-width:1040px;margin:16px auto 8px;font-family:var(--serif);font-size:24px;font-weight:500}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:8px}.ok{color:var(--ok)}
+.badge{display:inline-block;font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(15,118,110,.12);color:var(--ok);margin-bottom:8px}
+.acc-card{max-width:480px;margin:12px auto;background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+#frameWrap{position:absolute;inset:0;display:none}#frameWrap.on{display:block}
+#frame{width:100%;height:100%;border:0;background:#fff}
+body.full .sidebar,body.full .top{display:none!important}body.full #app{display:block}body.full .main,body.full .stage{height:100%}
+.modal{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(20,16,12,.5)}
+.modal.on{display:flex}
+.warn{background:#fff3cd;border:1px solid #e6d089;color:#6b5400;padding:10px 12px;border-radius:12px;font-size:13px;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div id="langGate" class="notranslate">
+  <div class="box">
+    <h1>Choose your language</h1>
+    <p>You can change this later from the menu.</p>
+    <input class="search" id="langSearch" placeholder="Search language" autocomplete="off">
+    <div class="lang-list" id="langList"></div>
+  </div>
+</div>
+<div id="onboard" class="notranslate hide">
+  <div class="box">
+    <h2>Quick start</h2>
+    <p>Accounts and comments are verified on the server (Supabase RPC). Passwords never stay in localStorage.</p>
+    <div class="row">
+      <button type="button" class="btn btn-blue" data-act="onboard-done">Got it</button>
+      <button type="button" class="btn btn-soft" data-act="nav" data-id="account">Create account</button>
+    </div>
+  </div>
+</div>
+<div id="app" class="notranslate">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <div class="top">
+      <div class="title" id="topTitle">Ironpetal</div>
+      <div class="menu-wrap">
+        <button class="icon" type="button" data-act="menu">☰</button>
+        <div class="menu" id="menu">
+          <button type="button" data-act="lang">Language</button>
+          <button type="button" data-act="home">Home</button>
+          <button type="button" data-act="account">Account</button>
+          <button type="button" data-act="logout">Logout (server)</button>
+        </div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="view on" id="homeView"></div>
+      <div class="view" id="accountView"></div>
+      <div id="frameWrap"><iframe id="frame" title="app"></iframe></div>
+    </div>
+  </div>
+</div>
+<div class="modal notranslate" id="gateModal">
+  <div class="box">
+    <h2>Enter product</h2>
+    <p id="gateMsg">Choose how to enter this product.</p>
+    <div class="row">
+      <button class="btn btn-dark" type="button" data-act="gate-public" id="gatePublicBtn">Public account</button>
+      <button class="btn btn-soft" type="button" data-act="gate-personal">Personal account</button>
+      <button class="btn btn-soft" type="button" data-act="gate-cancel">Cancel</button>
+    </div>
+    <p class="muted" id="gateHint" style="margin-top:12px"></p>
+    <p class="muted" style="margin-top:8px">Public account needs a signed-in Ironpetal session. Credentials fill only inside the product for this session.</p>
+  </div>
+</div>
+<script>
+(function(){
+  "use strict";
+  // ========== PUT YOUR SUPABASE KEYS HERE ==========
+  var SB_URL = "https://tztbyezqqcquiaqaiycg.supabase.co";
+  var SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dGJ5ZXpxcWNxdWlhcWFpeWNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNTc3MTMsImV4cCI6MjEwNzYzMzcxM30.n8mOPU-2q1xqO4zaEdrddslh8ZW5YmQLEBK9y21nY5s";
+  // ================================================
+
+  function configured(){
+    return SB_URL.indexOf("YOUR_PROJECT") < 0 && SB_ANON.indexOf("YOUR_ANON") < 0 && SB_URL.indexOf("supabase.co") > 0;
+  }
+  function esc(s){return String(s==null?"":s).replace(/[&<>"'`]/g,function(c){return ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;","`":"&#96;"})[c];});}
+  function escAttr(s){return esc(s);}
+  function token(){try{return sessionStorage.getItem("ip_tok")||"";}catch(e){return "";}}
+  function setToken(t){try{if(t)sessionStorage.setItem("ip_tok",t);else sessionStorage.removeItem("ip_tok");}catch(e){}}
+  // sessionStorage only (not localStorage) — harder persistence of stolen long-term auth in some XSS cases
+  var userCache = null;
+
+  async function rpc(name, args){
+    if(!configured()) throw new Error("Server not configured");
+    var res = await fetch(SB_URL.replace(/\/$/,"")+"/rest/v1/rpc/"+name,{
+      method:"POST",
+      headers:{
+        "apikey": SB_ANON,
+        "Authorization": "Bearer "+SB_ANON,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify(args||{})
+    });
+    if(!res.ok){
+      var t=await res.text();
+      throw new Error("RPC "+name+" failed: "+res.status+" "+t.slice(0,120));
+    }
+    return await res.json();
+  }
+
+  async function refreshMe(){
+    var t=token();
+    if(!t||!configured()){ userCache=null; return null; }
+    try{
+      var r=await rpc("ip_me",{p_token:t});
+      if(r && r.ok){ userCache=r.user; return userCache; }
+      setToken(""); userCache=null; return null;
+    }catch(e){ userCache=null; return null; }
+  }
+
+  var PUBLIC={lumera:1,host:1,store:1,forge:1,openvex:1,luvex:1};
+  var LANGS=[["en","English"],["fa","فارسی"],["ja","日本語"],["tr","Türkçe"],["de","Deutsch"],["fr","Français"],["es","Español"],["ar","العربية"],["ru","Русский"],["zh","中文"]];
+  var RTL={fa:1,ar:1,ur:1,he:1};
+  var RUBIKA={lumera:"https://rubika.ir/lumera__studio",forge:"https://rubika.ir/Rustedwarfar_ForgeofRust",openvex:"https://rubika.ir/openvex"};
+  var MODULES=[
+    {id:"lumera",title:"Lumera",src:"modules/lumera.html",group:"suite",desc:"Social canvas",maker:"Hesam",studio:"@lumera__studio",rk:"lumera",icon:"L",color:"#5b4b8a"},
+    {id:"host",title:"Lumera Host",src:"modules/host.html",group:"suite",desc:"Hosting desk",maker:"Hesam",studio:"@lumera__studio",rk:"lumera",icon:"H",color:"#0f766e"},
+    {id:"store",title:"Lumera Store",src:"modules/store.html",group:"suite",desc:"Orders desk",maker:"Hesam",studio:"@lumera__studio",rk:"lumera",icon:"S",color:"#b45309"},
+    {id:"luvex",title:"Luvex",src:"modules/luvex.html",group:"suite",desc:"Verification",maker:"Hesam",studio:"@lumera__studio",rk:"lumera",icon:"V",color:"#047857"},
+    {id:"forge",title:"Rusted Forge",src:"modules/forge.html",group:"suite",desc:"Mods platform",maker:"Amirhossein",studio:"@Rustedwarfar_ForgeofRust",rk:"forge",icon:"F",color:"#9a3412"},
+    {id:"openvex",title:"OpenVex",src:"modules/openvex.html",group:"suite",desc:"OpenVex login",maker:"Mohammad Erfan",studio:"@openvex",rk:"openvex",icon:"O",color:"#1d4ed8"},
+    {id:"northink",title:"Northink",src:"modules/northink.html",group:"lab",desc:"Notes",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"N",color:"#475569"},
+    {id:"pulseboard",title:"Pulseboard",src:"modules/pulseboard.html",group:"lab",desc:"Habits",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"P",color:"#7c3aed"},
+    {id:"gridcalc",title:"Gridcalc",src:"modules/gridcalc.html",group:"lab",desc:"Calculator",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"G",color:"#0369a1"},
+    {id:"linkloom",title:"Linkloom",src:"modules/linkloom.html",group:"lab",desc:"Links",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"K",color:"#be123c"},
+    {id:"quiettimer",title:"QuietTimer",src:"modules/quiettimer.html",group:"lab",desc:"Focus timer",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"Q",color:"#0e7490"}
+  ];
+  var state={lang:localStorage.getItem("ip_lang")||"",view:"home",pending:null,filter:"",comments:{}};
+  function $(id){return document.getElementById(id);}
+
+  function showView(name){
+    state.view=name;
+    document.body.classList.toggle("full", name==="module");
+    $("homeView").classList.toggle("on", name==="home");
+    $("accountView").classList.toggle("on", name==="account");
+    $("frameWrap").classList.toggle("on", name==="module");
+    $("topTitle").textContent=name==="account"?"Account":name==="home"?"Ironpetal":(state.modTitle||"Ironpetal");
+    drawSidebar();
+  }
+  function drawSidebar(){
+    function btn(id,label,icon,color){
+      var on=(state.view==="home"&&id==="home")||(state.view==="account"&&id==="account")||(state.view==="module"&&state.modId===id);
+      var badge = color
+        ? '<span class="sb-ico" style="background:'+escAttr(color)+'">'+esc(icon)+'</span>'
+        : '<span class="sb-ico neutral">'+esc(icon)+'</span>';
+      return '<button type="button" class="side-btn'+(on?" on":"")+'" data-act="nav" data-id="'+escAttr(id)+'" title="'+escAttr(label)+'">'+badge+'<span class="tip">'+esc(label)+'</span></button>';
+    }
+    var h=btn("home","Home","⌂",null)+btn("account","Account","☺",null);
+    MODULES.forEach(function(m){h+=btn(m.id,m.title,m.icon,m.color);});
+    $("sidebar").innerHTML=h;
+  }
+
+  async function loadComments(pid){
+    if(!configured()){ state.comments[pid]=[]; return []; }
+    try{
+      var r=await rpc("ip_list_comments",{p_product:pid});
+      state.comments[pid]=(r&&r.ok&&r.items)?r.items:[];
+    }catch(e){ state.comments[pid]=[]; }
+    return state.comments[pid];
+  }
+
+  async function drawHome(){
+    var u=userCache;
+    var list=MODULES.filter(function(m){
+      var q=(state.filter||"").toLowerCase();
+      if(!q) return true;
+      return (m.title+" "+m.desc+" "+m.maker).toLowerCase().indexOf(q)>=0;
+    });
+    // prefetch comments for suite (limited)
+    for(var i=0;i<list.length;i++){ if(!state.comments[list[i].id]) await loadComments(list[i].id); }
+    function card(m){
+      var link=RUBIKA[m.rk]||RUBIKA.lumera;
+      var cs=(state.comments[m.id]||[]).map(function(c){
+        return '<div class="comment"><b>'+esc(c.by)+'</b>: '+esc(c.text)+'</div>';
+      }).join("")||'<p class="muted">No comments yet.</p>';
+      return '<article class="card"><h3><span class="sb-ico" style="display:inline-grid;vertical-align:middle;margin-inline-end:8px;background:'+escAttr(m.color||'#333')+'">'+esc(m.icon)+'</span>'+esc(m.title)+'</h3><p class="muted">'+esc(m.desc)+'</p>'+
+        '<div class="creator">Maker: <b>'+esc(m.maker)+'</b><br>Studio <a href="'+escAttr(link)+'" target="_blank" rel="noopener noreferrer">'+esc(m.studio)+'</a></div>'+
+        '<div class="row"><button type="button" class="btn btn-dark" data-act="open" data-id="'+escAttr(m.id)+'">Open</button></div>'+
+        '<div style="margin-top:10px"><div class="muted">Server comments</div>'+cs+
+        (u&&configured()?
+          '<input class="field" id="c_'+escAttr(m.id)+'" maxlength="300" placeholder="Write a comment">'+
+          '<button type="button" class="btn btn-soft" data-act="comment" data-id="'+escAttr(m.id)+'">Post</button>'
+          :'<p class="muted">'+(configured()?"Sign in to comment.":"Configure Supabase to enable comments.")+'</p>')+
+        '</div></article>';
+    }
+    var suite=list.filter(function(m){return m.group==="suite";});
+    var lab=list.filter(function(m){return m.group==="lab";});
+    $("homeView").innerHTML=
+      '<div class="hero">'+
+        '<div class="badge">'+(configured()?"Server auth · RPC only":"SERVER NOT CONFIGURED")+'</div>'+
+        '<h1>Crafted with intention.</h1>'+
+        '<p class="muted">Accounts, sessions and comments are validated on Supabase. Forging localStorage can no longer create a real session.</p>'+
+        (!configured()?'<div class="warn">Owner: set SB_URL and SB_ANON in index.html, run supabase-security.sql, then redeploy.</div>':'')+
+        '<div class="row">'+
+          '<button type="button" class="btn btn-blue" data-act="nav" data-id="account">'+(u?"My account":"Create account")+'</button>'+
+          '<button type="button" class="btn btn-dark" data-act="open" data-id="lumera">Open Lumera</button>'+
+        '</div>'+(u?'<p class="muted" style="margin-top:8px">Signed in as <b>'+esc(u.username)+'</b></p>':'')+
+      '</div>'+
+      '<div class="notice">Security model: bcrypt password hash on server, session tokens in sessionStorage only, RLS deny-all on tables, access only via SECURITY DEFINER RPCs.</div>'+
+      '<div class="sec">Search</div>'+
+      '<div style="max-width:1040px;margin:0 auto"><input class="field" id="prodSearch" placeholder="Search products…" value="'+escAttr(state.filter)+'"></div>'+
+      '<div class="sec">Suite</div><div class="grid">'+suite.map(card).join("")+'</div>'+
+      '<div class="sec">Lab</div><div class="grid">'+lab.map(card).join("")+'</div>';
+    var ps=$("prodSearch");
+    if(ps) ps.oninput=function(){state.filter=this.value;drawHome();};
+  }
+
+  function drawAccount(){
+    var u=userCache;
+    if(!configured()){
+      $("accountView").innerHTML='<div class="acc-card"><h2 style="font-family:var(--serif);font-size:28px;font-weight:500">Server required</h2><p class="muted">Put Supabase URL + anon key in index.html and run SQL. Local fake accounts are disabled.</p><button class="btn btn-soft" data-act="home">Home</button></div>';
+      return;
+    }
+    if(!u){
+      $("accountView").innerHTML='<div class="acc-card"><h2 style="font-family:var(--serif);font-size:28px;font-weight:500">Account</h2>'+
+        '<p class="muted">Register or login — verified on server.</p>'+
+        '<form id="authForm">'+
+        '<label class="muted">Username</label><input class="field" id="regUser" maxlength="24" required autocomplete="username">'+
+        '<label class="muted">Password</label><input class="field" id="regPass" type="password" minlength="6" required autocomplete="current-password">'+
+        '<label class="muted">Display name (register)</label><input class="field" id="regName" maxlength="40">'+
+        '<div class="row">'+
+        '<button class="btn btn-blue" type="submit" id="btnReg">Create account</button>'+
+        '<button class="btn btn-dark" type="button" id="btnLogin">Login</button>'+
+        '<button class="btn btn-soft" type="button" data-act="home">Home</button></div>'+
+        '<p class="err" id="regErr"></p></form></div>';
+      $("authForm").onsubmit=function(e){e.preventDefault(); doRegister();};
+      $("btnLogin").onclick=function(){doLogin();};
+      return;
+    }
+    $("accountView").innerHTML='<div class="acc-card"><h2 style="font-family:var(--serif);font-size:28px;font-weight:500">Your account</h2>'+
+      '<p class="muted">Username: <b>'+esc(u.username)+'</b></p>'+
+      '<label class="muted">Display name</label><input class="field" id="pName" value="'+escAttr(u.display_name||"")+'">'+
+      '<label class="muted">Bio</label><textarea class="field" id="pBio" maxlength="280">'+esc(u.bio||"")+'</textarea>'+
+      '<div class="row"><button type="button" class="btn btn-dark" data-act="save-profile">Save</button>'+
+      '<button type="button" class="btn btn-soft" data-act="logout">Logout</button>'+
+      '<button type="button" class="btn btn-soft" data-act="home">Home</button></div>'+
+      '<p class="err" id="pMsg"></p></div>';
+  }
+
+  async function doRegister(){
+    var err=$("regErr");
+    try{
+      var r=await rpc("ip_register",{p_username:$("regUser").value,p_password:$("regPass").value,p_display:$("regName").value||""});
+      if(!r.ok){err.textContent=r.error||"failed";return;}
+      setToken(r.token); userCache=r.user; drawAccount();
+    }catch(e){err.textContent=e.message;}
+  }
+  async function doLogin(){
+    var err=$("regErr");
+    try{
+      var r=await rpc("ip_login",{p_username:$("regUser").value,p_password:$("regPass").value});
+      if(!r.ok){err.textContent=r.error||"failed";return;}
+      setToken(r.token); userCache=r.user; drawAccount();
+    }catch(e){err.textContent=e.message;}
+  }
+
+  function openModule(id, mode){
+    var m=MODULES.find(function(x){return x.id===id;}); if(!m) return;
+    if(!/^modules\/[a-z0-9_\-]+\.html$/i.test(m.src)) return;
+    state.modId=id; state.modTitle=m.title; showView("module");
+    try{
+      if(mode==="public" && userCache){
+        localStorage.setItem("ip_public_login", JSON.stringify({
+          user:"ironpetal", pass:"ironpetal", site:id, at:Date.now()
+        }));
+      } else {
+        localStorage.removeItem("ip_public_login");
+      }
+    }catch(e){}
+    $("frame").src=m.src+"?embed=1&v="+Date.now()+(mode==="public"?"&pub=1":"");
+  }
+  function requestOpen(id){
+    if(id==="home"){showView("home");drawHome();return;}
+    if(id==="account"){showView("account");drawAccount();return;}
+    if(PUBLIC[id]){
+      state.pending=id;
+      var u=userCache;
+      $("gateMsg").textContent="Public account uses shared demo login. Personal opens the product for your own login.";
+      $("gateHint").textContent=u?("Signed in as "+u.username+". Public login available."):"Create/unlock Ironpetal account first for Public account.";
+      $("gatePublicBtn").disabled=!u;
+      $("gateModal").classList.add("on");
+      return;
+    }
+    openModule(id, "personal");
+  }
+
+  document.addEventListener("click", async function(e){
+    var el=e.target;
+    for(var i=0;i<6&&el;i++,el=el.parentElement){ if(el.getAttribute&&el.getAttribute("data-act")) break; }
+    if(!el||!el.getAttribute) return;
+    var act=el.getAttribute("data-act"); if(!act) return;
+    if(act==="menu"){$("menu").classList.toggle("open");return;}
+    $("menu").classList.remove("open");
+    if(act==="lang"){$("app").classList.remove("show");$("langGate").classList.remove("hide");return;}
+    if(act==="home"){requestOpen("home");return;}
+    if(act==="account"||(act==="nav"&&el.getAttribute("data-id")==="account")){requestOpen("account");return;}
+    if(act==="nav"){requestOpen(el.getAttribute("data-id"));return;}
+    if(act==="open"){requestOpen(el.getAttribute("data-id"));return;}
+    if(act==="gate-public"){var pid=state.pending;if(!userCache){$("gateHint").textContent="Sign in to Ironpetal first.";return;}$("gateModal").classList.remove("on");if(pid)openModule(pid,"public");return;}
+    if(act==="gate-personal"){var p=state.pending;$("gateModal").classList.remove("on");if(p)openModule(p,"personal");return;}
+    if(act==="gate-cancel"){state.pending=null;$("gateModal").classList.remove("on");return;}
+    if(act==="comment"){
+      if(!userCache||!token())return;
+      var id=el.getAttribute("data-id"); var input=$("c_"+id); if(!input)return;
+      var text=(input.value||"").trim(); if(!text)return;
+      try{
+        var r=await rpc("ip_post_comment",{p_token:token(),p_product:id,p_body:text});
+        if(r&&r.ok){state.comments[id]=r.items||[]; drawHome();}
+      }catch(err){alert(err.message);}
+      return;
+    }
+    if(act==="save-profile"){
+      try{
+        var r=await rpc("ip_update_profile",{p_token:token(),p_display:$("pName").value,p_bio:$("pBio").value,p_avatar:userCache.avatar_url||""});
+        if(r&&r.ok){userCache=r.user;$("pMsg").className="err ok";$("pMsg").textContent="Saved";}
+        else $("pMsg").textContent=(r&&r.error)||"fail";
+      }catch(err){$("pMsg").textContent=err.message;}
+      return;
+    }
+    if(act==="logout"){
+      try{if(token())await rpc("ip_logout",{p_token:token()});}catch(e){}
+      setToken(""); userCache=null; requestOpen("account"); return;
+    }
+    if(act==="onboard-done"){localStorage.setItem("ip_onboard","1");$("onboard").classList.add("hide");$("app").classList.add("show");showView("home");drawHome();return;}
+  });
+
+  function drawLang(filter){
+    var q=(filter||"").toLowerCase(); var box=$("langList"); box.innerHTML="";
+    LANGS.forEach(function(L){
+      if(q&&L[0].indexOf(q)<0&&L[1].toLowerCase().indexOf(q)<0)return;
+      var b=document.createElement("button"); b.type="button"; b.className="lang-item";
+      b.innerHTML="<span>"+esc(L[1])+"</span><small>"+esc(L[0])+"</small>";
+      b.onclick=function(){setLang(L[0]);}; box.appendChild(b);
+    });
+  }
+  async function setLang(code){
+    state.lang=code; try{localStorage.setItem("ip_lang",code);}catch(e){}
+    document.documentElement.lang=code; document.documentElement.dir=RTL[code]?"rtl":"ltr";
+    $("langGate").classList.add("hide");
+    await refreshMe();
+    if(!localStorage.getItem("ip_onboard")) $("onboard").classList.remove("hide");
+    else {$("app").classList.add("show"); showView("home"); drawHome();}
+  }
+  $("langSearch").oninput=function(){drawLang(this.value);};
+  drawLang("");
+  window.addEventListener("message",function(e){if(e.data&&e.data.type==="ip-home")requestOpen("home");});
+
+  // wipe legacy client-only auth so old forgeries do nothing
+  try{
+    ["ip_user","ip_user_v2","ip_session"].forEach(function(k){localStorage.removeItem(k);});
+  }catch(e){}
+
+  if(state.lang) setLang(state.lang);
+})();
+</script>
+</body>
+</html>
