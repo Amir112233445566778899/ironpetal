@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head>
+<meta http-equiv="Content-Security-Policy" content="default-src * data: blob: 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'; img-src * data: blob:; connect-src *; font-src * data:; frame-src * data: blob:; object-src 'none'">
+<script>
+(function(){
+  var map={zh:"zh-CN",he:"iw"};
+  function code(l){l=(l||"en").toLowerCase();return map[l]||l;}
+  function lang(){try{return localStorage.getItem("ip_lang")||"en";}catch(e){return "en";}}
+  // cookie early = faster translate
+  try{
+    var c=code(lang());
+    document.cookie="googtrans=/auto/"+c+";path=/";
+    document.cookie="googtrans=/auto/"+c+";path=/;domain="+location.hostname;
+  }catch(e){}
+  window.ipForceTranslate=window.ipForceTranslate||function(l){
+    try{localStorage.setItem("ip_lang",l);}catch(e){}
+    var c=code(l);
+    document.cookie="googtrans=/auto/"+c+";path=/";
+    var sel=document.querySelector("select.goog-te-combo");
+    if(sel){sel.value=c;sel.dispatchEvent(new Event("change"));}
+  };
+})();
+</script>
+
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <title>OpenVex</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&amp;display=swap">
+    <style>
+        :root {
+            --bg: #000;
+            --field: #0f1012;
+            --line: #2b2e33;
+            --text: #f2f3f4;
+            --muted: #7c828a;
+            --white: #fff;
+            --danger: #f4212e;
+            --ease: cubic-bezier(.22, 1, .36, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Vazirmatn, "IRANSans", Tahoma, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html[lang="en"] * {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        .page {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        /* ================= Top bar ================= */
+        .topbar {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px 0 8px;
+            flex-shrink: 0;
+        }
+        .back {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: transparent;
+            color: var(--white);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: background .15s, transform .15s var(--ease);
+        }
+        .back:active { background: rgba(255,255,255,0.12); transform: scale(.9); }
+        .back svg { width: 24px; height: 24px; }
+        html[dir="ltr"] .back svg { transform: scaleX(-1); }
+        .back:focus-visible { outline: 2px solid var(--white); }
+
+        /* ================= Language (small, flat) ================= */
+        .lang { position: relative; margin-inline-end: 6px; }
+        .lang-btn {
+            height: 38px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--text);
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s, border-color .2s;
+        }
+        .lang-btn:active { background: rgba(255,255,255,0.08); }
+        @media (hover: hover) { .lang-btn:hover { border-color: #4a4e54; } }
+        .lang-btn:focus-visible { outline: 2px solid var(--white); outline-offset: 2px; }
+        .lang-btn svg { width: 17px; height: 17px; }
+
+        .lang-menu {
+            position: absolute;
+            top: 46px;
+            inset-inline-end: 0;
+            min-width: 160px;
+            padding: 5px;
+            background: #111214;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+            opacity: 0;
+            transform: translateY(-6px) scale(.97);
+            transform-origin: top;
+            pointer-events: none;
+            transition: opacity .18s ease, transform .22s var(--ease);
+            z-index: 30;
+        }
+        .lang.open .lang-menu { opacity: 1; transform: none; pointer-events: auto; }
+        .lang-item {
+            width: 100%;
+            height: 44px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: none;
+            border-radius: 11px;
+            background: transparent;
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: start;
+        }
+        .lang-item:active { background: rgba(255,255,255,0.1); }
+        @media (hover: hover) { .lang-item:hover { background: rgba(255,255,255,0.06); } }
+        .lang-item:focus-visible { outline: 2px solid var(--white); }
+        .lang-item .tick { width: 17px; height: 17px; opacity: 0; }
+        .lang-item[aria-checked="true"] { font-weight: 800; color: var(--white); }
+        .lang-item[aria-checked="true"] .tick { opacity: 1; }
+
+        /* ================= Body ================= */
+        .body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 6px 18px 28px;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .rise { animation: rise-in .6s var(--ease) both; animation-delay: calc(var(--i, 0) * 60ms + 80ms); }
+
+        .logo-wrap { width: 52px; height: 52px; margin-bottom: 10px; display: flex; align-items: center; }
+        .logo-wrap img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .logo-fallback { display: none; font-size: 22px; font-weight: 800; color: var(--white); direction: ltr; }
+        .logo-wrap.no-img img { display: none; }
+        .logo-wrap.no-img .logo-fallback { display: block; }
+
+        /* ✅ NEW: tagline under logo */
+        .tagline {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            letter-spacing: .5px;
+            margin-bottom: 20px;
+        }
+        html[lang="fa"] .tagline,
+        html[lang="ar"] .tagline { letter-spacing: 0; }
+
+        h1 { font-size: 30px; font-weight: 800; color: var(--white); margin-bottom: 8px; }
+        .hint { font-size: 14.5px; color: var(--muted); line-height: 1.7; margin-bottom: 26px; }
+
+        /* floating-label fields */
+        .field { position: relative; margin-bottom: 14px; }
+        .field.with-help { margin-bottom: 6px; }
+
+        .field input[type="text"],
+        .field input[type="email"],
+        .field input[type="password"] {
+            width: 100%;
+            height: 60px;
+            padding: 22px 18px 6px;
+            border-radius: 14px;
+            border: 1.5px solid var(--line);
+            background: var(--field);
+            color: var(--white);
+            font-size: 16px;
+            outline: none;
+            transition: border-color .2s;
+        }
+        .field input::placeholder { color: transparent; }
+        .field input:focus { border-color: var(--white); }
+        .field.has-toggle input { padding-inline-end: 54px; }
+        .field.invalid input { border-color: var(--danger); }
+        .field.shake { animation: shake .4s ease; }
+
+        .field label {
+            position: absolute;
+            inset-inline-start: 19px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 16px;
+            pointer-events: none;
+            transition: top .18s var(--ease), font-size .18s var(--ease), color .18s;
+            max-width: calc(100% - 70px);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .field input:focus + label,
+        .field input:not(:placeholder-shown) + label { top: 17px; font-size: 12px; }
+        .field input:focus + label { color: var(--white); }
+        .field.invalid input + label { color: var(--danger); }
+
+        .help { font-size: 12.5px; color: var(--muted); line-height: 1.6; padding: 0 6px; margin-bottom: 14px; }
+
+        .toggle-pass {
+            position: absolute;
+            inset-inline-end: 8px;
+            top: 8px;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color .2s, transform .15s var(--ease);
+        }
+        .toggle-pass:active { transform: scale(.85); color: var(--white); }
+        .toggle-pass svg { width: 22px; height: 22px; }
+        .toggle-pass .eye-off { display: none; }
+        .toggle-pass.showing .eye { display: none; }
+        .toggle-pass.showing .eye-off { display: block; }
+        .toggle-pass:focus-visible { outline: 2px solid var(--white); }
+
+        .error-msg {
+            color: #ff7a83;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height .3s var(--ease), opacity .3s, margin .3s;
+        }
+        .error-msg.show { max-height: 90px; opacity: 1; margin: 4px 0 14px; }
+
+        /* hidden bot trap */
+        .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+        /* ================= Button ================= */
+        .btn {
+            width: 100%;
+            height: 54px;
+            border: none;
+            border-radius: 14px;
+            background: var(--white);
+            color: #000;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+            transition: transform .15s var(--ease), background .2s;
+        }
+        @media (hover: hover) { .btn:hover { background: #e8eaeb; } }
+        .btn:active { transform: scale(.975); }
+        .btn:disabled { cursor: default; }
+        .btn:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2.5px solid rgba(0,0,0,0.18);
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+        .check { width: 22px; height: 22px; }
+        .check path { stroke-dasharray: 24; stroke-dashoffset: 24; animation: draw .35s ease forwards; }
+
+        .switch-line { text-align: center; color: var(--muted); font-size: 14px; margin-top: 22px; }
+        .switch-line a { color: var(--white); text-decoration: none; font-weight: 700; }
+        .switch-line a:active { opacity: .6; }
+
+        /* ================= Motion ================= */
+        @keyframes rise-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-7px); }
+            40% { transform: translateX(7px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="topbar">
+            <a href="openvex.html" class="back" id="backBtn" data-i18n-aria="back" aria-label="Back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+            </a>
+
+            <div class="lang" id="lang">
+                <button type="button" class="lang-btn" id="langBtn" aria-haspopup="listbox" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M2.5 12h19M12 2.5c2.8 2.7 4.2 5.9 4.2 9.5s-1.4 6.8-4.2 9.5c-2.8-2.7-4.2-5.9-4.2-9.5S9.2 5.2 12 2.5z"></path></svg>
+                    <span id="langLabel">English</span>
+                </button>
+                <div class="lang-menu" role="listbox">
+                    <button type="button" class="lang-item" role="option" data-lang="fa" lang="fa" dir="rtl" aria-checked="false">
+                        <span>فارسی</span>
+                        <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+                    </button>
+                    <button type="button" class="lang-item" role="option" data-lang="en" lang="en" dir="ltr" aria-checked="true">
+                        <span>English</span>
+                        <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+                    </button>
+                    <button type="button" class="lang-item" role="option" data-lang="ar" lang="ar" dir="rtl" aria-checked="false">
+                        <span>العربية</span>
+                        <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="body">
+            <div class="logo-wrap rise no-img" id="logoWrap" style="--i:0">
+                <img src="https://s1.7upload.com/202610/file_0000000007c481f49da318abe02a6300-ixkusyv.png" alt="OpenVex" referrerpolicy="no-referrer" id="logoImg">
+                <div class="logo-fallback">OpenVex</div>
+            </div>
+
+            <!-- ✅ NEW: tagline in 3 languages -->
+            <p class="tagline rise" style="--i:0" data-i18n="tagline">Fast · Free · Secure</p>
+
+            <h1 class="rise" style="--i:1" data-i18n="title">Create account</h1>
+            <p class="hint rise" style="--i:2" data-i18n="hint">It only takes a few seconds.</p>
+
+            <form id="registerForm" novalidate="">
+                <!-- ✅ TODO: server-side CSRF token (see review) -->
+                <!-- <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf']) ?>"> -->
+
+                <div class="field with-help rise" id="userField" style="--i:3">
+                    <input type="text" id="username" placeholder=" " autocomplete="username" autocapitalize="none" spellcheck="false" dir="ltr" maxlength="30" enterkeyhint="next">
+                    <label for="username" data-i18n="userLbl">Username</label>
+                </div>
+                <div class="help rise" style="--i:3" data-i18n="userHelp">3–30 characters: letters, numbers and _</div>
+
+                <div class="field rise" id="emailField" style="--i:4">
+                    <input type="email" id="email" placeholder=" " autocomplete="email" autocapitalize="none" spellcheck="false" dir="ltr" maxlength="254" inputmode="email" enterkeyhint="next">
+                    <label for="email" data-i18n="emailLbl">Email</label>
+                </div>
+
+                <div class="field has-toggle with-help rise" id="passField" style="--i:5">
+                    <input type="password" id="password" placeholder=" " autocomplete="new-password" dir="auto" enterkeyhint="next">
+                    <label for="password" data-i18n="passLbl">Password</label>
+                    <button type="button" class="toggle-pass" id="togglePass" aria-label="Show password">
+                        <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10.9 10.9 0 0 1 12 19c-6.4 0-10-7-10-7a18.5 18.5 0 0 1 5.1-5.9M9.9 5.2A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a18.6 18.6 0 0 1-2.2 3.2M1 1l22 22"></path><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"></path></svg>
+                    </button>
+                </div>
+                <div class="help rise" style="--i:5" data-i18n="passHelp">At least 8 characters</div>
+
+                <div class="field rise" id="confirmField" style="--i:6">
+                    <input type="password" id="confirm" placeholder=" " autocomplete="new-password" dir="auto" enterkeyhint="go">
+                    <label for="confirm" data-i18n="confirmLbl">Confirm password</label>
+                </div>
+
+                <!-- bot trap (hidden from people) -->
+                <div class="hp" aria-hidden="true">
+                    <input type="text" id="website" tabindex="-1" autocomplete="off">
+                </div>
+
+                <div class="error-msg" id="errorMsg" role="alert"></div>
+
+                <button type="submit" class="btn rise" id="registerBtn" style="--i:7" data-i18n="create">Create account</button>
+            </form>
+
+            <div class="switch-line rise" style="--i:8">
+                <span data-i18n="haveAccount">Already have an account?</span>
+                <a href="openvex.html" data-i18n="loginLink">Log in</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ---------- Translations ---------- */
+        const I18N = {
+            fa: {
+                name: 'فارسی', dir: 'rtl',
+                tagline: 'سریع · رایگان · امن',
+                title: 'ساخت حساب',
+                hint: 'فقط چند ثانیه وقت می‌گیره.',
+                userLbl: 'نام کاربری',
+                userHelp: '۳ تا ۳۰ کاراکتر: حروف انگلیسی، عدد و _',
+                emailLbl: 'ایمیل',
+                passLbl: 'رمز عبور',
+                passHelp: 'حداقل ۸ کاراکتر',
+                confirmLbl: 'تکرار رمز عبور',
+                create: 'ساخت حساب',
+                creating: 'در حال ساخت حساب...',
+                haveAccount: 'حساب داری؟',
+                loginLink: 'ورود',
+                back: 'بازگشت',
+                showPass: 'نمایش رمز',
+                hidePass: 'مخفی کردن رمز',
+                errFill: 'همه فیلدها رو پر کن.',
+                errUsername: 'نام کاربری باید ۳ تا ۳۰ کاراکتر و فقط شامل حروف انگلیسی، عدد و _ باشه.',
+                errReserved: 'این نام کاربری مجاز نیست.',
+                errEmail: 'یه ایمیل معتبر وارد کن.',
+                errPassShort: 'رمز عبور باید حداقل ۸ کاراکتر باشه.',
+                errPassLong: 'رمز عبور خیلی طولانیه (حداکثر ۷۲ کاراکتر).',
+                errMismatch: 'رمز عبور و تکرارش یکی نیستن.',
+                errTaken: 'این نام کاربری یا ایمیل قبلاً ثبت شده.',
+                errRate: 'تلاش‌های زیاد. بعداً دوباره امتحان کن.',
+                errFail: 'ساخت حساب ناموفق بود.',
+                errServer: 'خطا در ارتباط با سرور. دوباره تلاش کن.'
+            },
+            en: {
+                name: 'English', dir: 'ltr',
+                tagline: 'Fast · Free · Secure',
+                title: 'Create account',
+                hint: 'It only takes a few seconds.',
+                userLbl: 'Username',
+                userHelp: '3–30 characters: letters, numbers and _',
+                emailLbl: 'Email',
+                passLbl: 'Password',
+                passHelp: 'At least 8 characters',
+                confirmLbl: 'Confirm password',
+                create: 'Create account',
+                creating: 'Creating account...',
+                haveAccount: 'Already have an account?',
+                loginLink: 'Log in',
+                back: 'Back',
+                showPass: 'Show password',
+                hidePass: 'Hide password',
+                errFill: 'Fill in all fields.',
+                errUsername: 'Username must be 3–30 characters: English letters, numbers and _ only.',
+                errReserved: 'This username is not allowed.',
+                errEmail: 'Enter a valid email address.',
+                errPassShort: 'Password must be at least 8 characters.',
+                errPassLong: 'Password is too long (max 72 characters).',
+                errMismatch: 'Passwords do not match.',
+                errTaken: 'This username or email is already taken.',
+                errRate: 'Too many attempts. Try again later.',
+                errFail: 'Could not create the account.',
+                errServer: 'Server error. Try again.'
+            },
+            ar: {
+                name: 'العربية', dir: 'rtl',
+                tagline: 'سريع · مجاني · آمن',
+                title: 'إنشاء حساب',
+                hint: 'يستغرق الأمر ثوانٍ فقط.',
+                userLbl: 'اسم المستخدم',
+                userHelp: 'من 3 إلى 30 حرفًا: أحرف إنجليزية وأرقام و _',
+                emailLbl: 'البريد الإلكتروني',
+                passLbl: 'كلمة المرور',
+                passHelp: '8 أحرف على الأقل',
+                confirmLbl: 'تأكيد كلمة المرور',
+                create: 'إنشاء الحساب',
+                creating: 'جارٍ إنشاء الحساب...',
+                haveAccount: 'لديك حساب بالفعل؟',
+                loginLink: 'تسجيل الدخول',
+                back: 'رجوع',
+                showPass: 'إظهار كلمة المرور',
+                hidePass: 'إخفاء كلمة المرور',
+                errFill: 'املأ جميع الحقول.',
+                errUsername: 'يجب أن يكون اسم المستخدم من 3 إلى 30 حرفًا، ويحتوي على أحرف إنجليزية وأرقام و _ فقط.',
+                errReserved: 'اسم المستخدم هذا غير مسموح.',
+                errEmail: 'أدخل بريدًا إلكترونيًا صالحًا.',
+                errPassShort: 'يجب ألا تقل كلمة المرور عن 8 أحرف.',
+                errPassLong: 'كلمة المرور طويلة جدًا (الحد الأقصى 72).',
+                errMismatch: 'كلمتا المرور غير متطابقتين.',
+                errTaken: 'اسم المستخدم أو البريد الإلكتروني مستخدم بالفعل.',
+                errRate: 'محاولات كثيرة. حاول لاحقًا.',
+                errFail: 'تعذّر إنشاء الحساب.',
+                errServer: 'خطأ في الاتصال بالخادم. حاول مرة أخرى.'
+            }
+        };
+
+        const LANG_KEY = 'openvex_lang';
+        let currentLang = 'en';
+        function t(key) { return I18N[currentLang][key]; }
+
+        function pickInitialLang() {
+            try {
+                const saved = localStorage.getItem(LANG_KEY);
+                if (saved && I18N[saved]) return saved;
+            } catch (e) {}
+            const nav = (navigator.language || 'en').slice(0, 2).toLowerCase();
+            return I18N[nav] ? nav : 'en';
+        }
+
+        /* ---------- Elements ---------- */
+        const form = document.getElementById('registerForm');
+        const usernameInput = document.getElementById('username');
+        const emailInput = document.getElementById('email');
+        const passInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirm');
+        const fields = {
+            user: document.getElementById('userField'),
+            email: document.getElementById('emailField'),
+            pass: document.getElementById('passField'),
+            confirm: document.getElementById('confirmField')
+        };
+        const toggleBtn = document.getElementById('togglePass');
+        const errorMsg = document.getElementById('errorMsg');
+        const registerBtn = document.getElementById('registerBtn');
+        const logoWrap = document.getElementById('logoWrap');
+        const logoImg = document.getElementById('logoImg');
+        const langBox = document.getElementById('lang');
+        const langBtn = document.getElementById('langBtn');
+
+        function buzz(ms) { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} }
+
+        function applyLang(lang, save) {
+            if (!I18N[lang]) lang = 'en';
+            currentLang = lang;
+            const d = I18N[lang];
+
+            document.documentElement.lang = lang;
+            document.documentElement.dir = d.dir;
+
+            document.querySelectorAll('[data-i18n]').forEach(function (el) { el.textContent = t(el.dataset.i18n); });
+            document.querySelectorAll('[data-i18n-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+
+            toggleBtn.setAttribute('aria-label', toggleBtn.classList.contains('showing') ? t('hidePass') : t('showPass'));
+            document.getElementById('langLabel').textContent = d.name;
+            document.querySelectorAll('.lang-item').forEach(function (it) {
+                it.setAttribute('aria-checked', it.dataset.lang === lang ? 'true' : 'false');
+            });
+
+            if (errorMsg.classList.contains('show') && errorMsg.dataset.key) errorMsg.textContent = t(errorMsg.dataset.key);
+            if (!registerBtn.disabled) registerBtn.textContent = t('create');
+
+            if (save) { try { localStorage.setItem(LANG_KEY, lang); } catch (e) {} }
+        }
+
+        /* ---------- Language menu ---------- */
+        function setMenu(open) {
+            langBox.classList.toggle('open', open);
+            langBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+        langBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            setMenu(!langBox.classList.contains('open'));
+        });
+        document.querySelectorAll('.lang-item').forEach(function (it) {
+            it.addEventListener('click', function () { applyLang(it.dataset.lang, true); setMenu(false); });
+        });
+        document.addEventListener('click', function (e) { if (!langBox.contains(e.target)) setMenu(false); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+
+        /* ---------- Logo fallback ---------- */
+        function logoFailed() { logoWrap.classList.add('no-img'); }
+        logoImg.addEventListener('error', logoFailed);
+        if (logoImg.complete && logoImg.naturalWidth === 0) logoFailed();
+
+        /* ---------- Form behaviour ---------- */
+        toggleBtn.addEventListener('click', function () {
+            const show = passInput.type === 'password';
+            passInput.type = show ? 'text' : 'password';
+            confirmInput.type = show ? 'text' : 'password';
+            toggleBtn.classList.toggle('showing', show);
+            toggleBtn.setAttribute('aria-label', show ? t('hidePass') : t('showPass'));
+            passInput.focus();
+        });
+
+        [[usernameInput, emailInput], [emailInput, passInput], [passInput, confirmInput]].forEach(function (pair) {
+            pair[0].addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); pair[1].focus(); }
+            });
+        });
+
+        [usernameInput, emailInput, passInput, confirmInput].forEach(function (inp) {
+            inp.addEventListener('input', function () {
+                inp.parentElement.classList.remove('invalid');
+                hideError();
+            });
+        });
+
+        function hideError() { errorMsg.classList.remove('show'); }
+
+        function shake(field) {
+            field.classList.remove('shake');
+            void field.offsetWidth;
+            field.classList.add('shake');
+        }
+
+        function setLoading() {
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<span class="spinner"></span><span>' + t('creating') + '</span>';
+        }
+        function setIdle() {
+            registerBtn.disabled = false;
+            registerBtn.textContent = t('create');
+        }
+        function setSuccess() {
+            registerBtn.innerHTML = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+        }
+
+        function showError(key, list) {
+            errorMsg.dataset.key = key;
+            errorMsg.textContent = t(key);
+            errorMsg.classList.add('show');
+            (list || []).forEach(function (name) { fields[name].classList.add('invalid'); shake(fields[name]); });
+            buzz([40, 40, 40]);
+            setIdle();
+        }
+
+        const SERVER_CODES = {
+            missing_fields:    ['errFill', []],
+            invalid_username:  ['errUsername', ['user']],
+            reserved_username: ['errReserved', ['user']],
+            invalid_email:     ['errEmail', ['email']],
+            password_short:    ['errPassShort', ['pass']],
+            password_long:     ['errPassLong', ['pass']],
+            password_mismatch: ['errMismatch', ['confirm']],
+            taken:             ['errTaken', ['user', 'email']],
+            rate_limited:      ['errRate', []]
+        };
+
+        function byteLength(str) { return new TextEncoder().encode(str).length; }
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const username = usernameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passInput.value;
+            const confirm = confirmInput.value;
+
+            hideError();
+
+            if (!username || !email || !password || !confirm) {
+                showError('errFill', [!username ? 'user' : null, !email ? 'email' : null, !password ? 'pass' : null, !confirm ? 'confirm' : null].filter(Boolean));
+                return;
+            }
+            if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) { showError('errUsername', ['user']); usernameInput.focus(); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('errEmail', ['email']); emailInput.focus(); return; }
+            if (password.length < 8) { showError('errPassShort', ['pass']); passInput.focus(); return; }
+            if (byteLength(password) > 72) { showError('errPassLong', ['pass']); passInput.focus(); return; }
+            if (password !== confirm) { showError('errMismatch', ['confirm']); confirmInput.focus(); return; }
+
+            setLoading();
+            document.activeElement && document.activeElement.blur();
+
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('confirm', confirm);
+            formData.append('website', document.getElementById('website').value);
+            // formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value); // TODO
+
+            try {
+                // offline register
+                const userEl=document.getElementById('username')||document.querySelector('[name=username]');
+                const passEl=document.getElementById('password')||document.querySelector('[name=password]');
+                const user=(userEl&&userEl.value||'').trim();
+                const pass=(passEl&&passEl.value||'');
+                await new Promise(r=>setTimeout(r,200));
+                if(user&&pass){
+                  try{localStorage.setItem('openvex_user',JSON.stringify({username:user,at:Date.now()}));localStorage.setItem('openvex_session','1');}catch(e){}
+                  window.location.href='openvex-app.html';
+                  return;
+                }
+                const response={ok:false};
+                if(false){
+} catch (err) {
+                showError('errServer', []);
+            }
+        });
+
+        /* ---------- Init ---------- */
+        applyLang(pickInitialLang(), false);
+    </script>
+
+
+<!-- IRONPETAL EMBED BAR -->
+<style id="ip-bar-css">
+#ipEmbedBar{position:fixed;z-index:2147483646;top:10px;inset-inline-start:10px;display:flex;gap:6px;align-items:center;
+background:rgba(26,23,20,.82);color:#f7f1e8;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);
+border-radius:999px;padding:6px 8px 6px 10px;font:600 11px/1 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#ipEmbedBar button,#ipEmbedBar a{appearance:none;border:0;background:rgba(255,255,255,.1);color:inherit;border-radius:999px;
+padding:6px 10px;cursor:pointer;text-decoration:none;font:inherit}
+#ipEmbedBar button:hover,#ipEmbedBar a:hover{background:rgba(255,255,255,.18)}
+#ipEmbedBar .dot{width:7px;height:7px;border-radius:50%;background:#c4a484;margin-inline-end:2px}
+</style>
+<div id="ipEmbedBar"><span class="dot"></span><span>Ironpetal</span>
+<button type="button" id="ipHomeBtn">Home</button>
+<button type="button" id="ipLangBtn">Lang</button>
+</div>
+<script>
+(function(){
+  function goHome(){
+    try{
+      if(window.top && window.top!==window){window.top.postMessage({type:'ip-home'},'*');return;}
+    }catch(e){}
+    var base=location.pathname.split('/modules/')[0]||'';
+    location.href=(base&&base!==location.pathname?base+'/':'../')+'index.html';
+  }
+  var b=document.getElementById('ipHomeBtn'); if(b) b.onclick=goHome;
+  var l=document.getElementById('ipLangBtn');
+  if(l) l.onclick=function(){
+    try{if(window.top&&window.top!==window){window.top.postMessage({type:'ip-lang-open'},'*');return;}}catch(e){}
+  };
+  // public auto-login fill
+  try{
+    var pub=localStorage.getItem('ip_public_login');
+    if(pub){
+      var d=JSON.parse(pub);
+      localStorage.removeItem('ip_public_login');
+      setTimeout(function(){
+        var users=document.querySelectorAll('input[type=text],input[type=email],input:not([type]),input[name*=user],input[id*=user],input[id*=User],input[placeholder]');
+        var passes=document.querySelectorAll('input[type=password]');
+        var u=null;
+        users.forEach(function(el){
+          var id=(el.id||'')+(el.name||'')+(el.placeholder||'');
+          if(/user|email|نام|login|id/i.test(id) && !u) u=el;
+        });
+        if(!u && users[0]) u=users[0];
+        if(u){u.value=d.user||'ironpetal'; u.dispatchEvent(new Event('input',{bubbles:true}));}
+        if(passes[0]){passes[0].value=d.pass||'ironpetal'; passes[0].dispatchEvent(new Event('input',{bubbles:true}));}
+      },600);
+    }
+  }catch(e){}
+})();
+</script>
+
+
+<script>
+(function(){
+  if(window.__ipGtFast) return; window.__ipGtFast=true;
+  var map={zh:'zh-CN',he:'iw'};
+  function code(l){l=(l||'en').toLowerCase();return map[l]||l;}
+  function lang(){try{return localStorage.getItem('ip_lang')||'en';}catch(e){return 'en';}}
+  function applyCookie(l){
+    var c=code(l);
+    try{document.cookie='googtrans=/auto/'+c+';path=/';document.cookie='googtrans=/auto/'+c+';path=/;domain='+location.hostname;}catch(e){}
+  }
+  applyCookie(lang());
+  window.ipForceTranslate=function(l){
+    try{localStorage.setItem('ip_lang',l);}catch(e){}
+    applyCookie(l);
+    var tries=0;
+    (function pulse(){
+      var sel=document.querySelector('select.goog-te-combo');
+      if(sel){sel.value=code(l);sel.dispatchEvent(new Event('change'));}
+      else if(tries++<20) setTimeout(pulse,200);
+    })();
+  };
+  window.googleTranslateElementInit=function(){
+    try{
+      new google.translate.TranslateElement({pageLanguage:'auto',includedLanguages:'en,fa,ja,tr,de,fr,es,ar,ru,zh-CN,hi,ur,pt,it,ko,id,nl,pl,az,sv,uk,th,vi',autoDisplay:false,multilanguagePage:true},'google_translate_element');
+      setTimeout(function(){window.ipForceTranslate(lang());},200);
+      setTimeout(function(){window.ipForceTranslate(lang());},800);
+    }catch(e){}
+  };
+  if(!document.getElementById('google_translate_element')){
+    var d=document.createElement('div');d.id='google_translate_element';d.style.display='none';document.body?document.body.appendChild(d):document.documentElement.appendChild(d);
+  }
+  if(!document.getElementById('ip-gt-src')){
+    var s=document.createElement('script');s.id='ip-gt-src';
+    s.src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    (document.head||document.documentElement).appendChild(s);
+  }
+  window.addEventListener('message',function(e){if(e.data&&e.data.type==='ip-lang'&&e.data.lang) window.ipForceTranslate(e.data.lang);});
+  // restyle hide banner
+  var st=document.createElement('style');st.textContent='.goog-te-banner-frame,.skiptranslate,.goog-te-gadget{display:none!important}body{top:0!important}';document.head.appendChild(st);
+})();
+</script>
+
+</body></html>
