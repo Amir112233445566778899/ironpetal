@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://translate.google.com https://translate.googleapis.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://translate.googleapis.com https://translate.google.com; frame-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="index,follow">
+<title>Ironpetal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1714;--muted:#6f675f;--line:rgba(26,23,20,.12);--paper:rgba(251,247,241,.95);--sidebar:72px;--font:"IBM Plex Sans",system-ui,sans-serif;--serif:"Cormorant Garamond",Georgia,serif;--shadow:0 18px 50px rgba(40,30,20,.1);--ok:#0f766e;--bad:#a33}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--ink);overflow:hidden;background:#efe6db url("bg.png") center/cover no-repeat fixed}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+a{color:inherit}
+.hidden{display:none!important}
+.goog-te-banner-frame,.skiptranslate,.goog-te-gadget,#goog-gt-tt{display:none!important}
+body{top:0!important}
+#gt{position:absolute;width:0;height:0;overflow:hidden;opacity:0}
+
+#langGate,#onboard{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(239,230,219,.96)}
+#langGate.hide,#onboard.hide{display:none}
+.box{width:min(520px,100%);background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow)}
+.box h1,.box h2{font-family:var(--serif);font-weight:500;margin-bottom:8px}
+.box h1{font-size:32px}.box h2{font-size:26px}
+.box p{color:var(--muted);margin-bottom:12px;font-size:14px;line-height:1.5}
+.search,.field{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;margin:6px 0 10px;background:#fff}
+.lang-list{max-height:260px;overflow:auto;display:grid;gap:4px}
+.lang-item{text-align:left;padding:10px 12px;border-radius:10px;display:flex;justify-content:space-between}
+.lang-item:hover{background:rgba(0,0,0,.05)}
+.lang-item small{color:var(--muted)}
+.steps{display:grid;gap:10px;margin:12px 0}
+.step{padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.step b{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+
+#app{display:none;height:100%}
+#app.show{display:flex}
+.sidebar{width:var(--sidebar);border-right:1px solid var(--line);background:rgba(251,247,241,.92);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:6px;overflow-y:auto}
+.side-btn{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;position:relative;font-size:16px}
+.side-btn:hover,.side-btn.on{background:#fff;border:1px solid var(--line)}
+.side-btn .tip{position:absolute;left:54px;top:50%;transform:translateY(-50%);background:#1a1714;color:#fff;font-size:11px;padding:5px 8px;border-radius:7px;opacity:0;pointer-events:none;white-space:nowrap;z-index:30}
+.side-btn:hover .tip{opacity:1}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;height:100%}
+.top{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--line);background:rgba(251,247,241,.92)}
+.title{font-family:var(--serif);font-size:20px}
+.icon{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#fff}
+.menu-wrap{position:relative}
+.menu{display:none;position:absolute;right:0;top:42px;width:220px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:var(--shadow);z-index:50}
+.menu.open{display:block}
+.menu button{display:block;width:100%;text-align:left;padding:10px;border-radius:8px;font-size:13px}
+.menu button:hover{background:rgba(0,0,0,.05)}
+.stage{flex:1;position:relative;overflow:hidden}
+.view{position:absolute;inset:0;overflow:auto;display:none;padding:18px}
+.view.on{display:block}
+.hero{max-width:1040px;margin:0 auto 16px}
+.hero h1{font-family:var(--serif);font-size:clamp(30px,5vw,46px);font-weight:500;margin-bottom:10px}
+.lead{color:var(--muted);max-width:52ch;line-height:1.55;margin-bottom:12px}
+.badge{display:inline-block;font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(15,118,110,.1);color:var(--ok);margin-bottom:8px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:500}
+.btn-dark{background:#1a1714;color:#fff}
+.btn-soft{background:#fff;border:1px solid var(--line)}
+.btn-blue{background:linear-gradient(120deg,#2f5d8c,#5b4b8a);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;max-width:1040px;margin:0 auto}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px}
+.card h3{font-family:var(--serif);font-size:22px;margin-bottom:6px}
+.muted{color:var(--muted);font-size:13px;line-height:1.45;margin-bottom:8px}
+.creator{font-size:12px;padding:8px;border-radius:10px;background:rgba(255,255,255,.75);border:1px solid var(--line);margin-bottom:10px}
+.comment{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px;word-break:break-word}
+.avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:#fff}
+.sec{max-width:1040px;margin:18px auto 8px;font-family:var(--serif);font-size:24px;font-weight:500}
+.notice{max-width:1040px;margin:0 auto 14px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.7);font-size:13px;color:var(--muted);line-height:1.45}
+.searchbar{max-width:1040px;margin:0 auto 12px}
+.chip{display:inline-block;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:11px;margin:2px}
+.err{color:var(--bad);font-size:13px;margin-top:8px;min-height:18px}
+.ok{color:var(--ok)}
+.feature{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;max-width:1040px;margin:0 auto 14px}
+.feature .f{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px}
+.feature h4{font-size:13px;margin-bottom:4px}
+.feature p{font-size:12px;color:var(--muted);line-height:1.4}
+
+#frameWrap{position:absolute;inset:0;display:none}
+#frameWrap.on{display:block}
+#frame{width:100%;height:100%;border:0;background:#fff}
+body.full .sidebar,body.full .top{display:none!important}
+body.full #app{display:block}
+body.full .main,body.full .stage{height:100%}
+
+.modal{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(20,16,12,.5)}
+.modal.on{display:flex}
+.acc-card{max-width:480px;margin:12px auto;background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+.lock{font-size:12px;color:var(--muted);margin-top:8px}
+@media(max-width:700px){.sidebar{width:56px}.side-btn{width:40px;height:40px}.view{padding:12px}}
+</style>
+</head>
+<body>
+<div id="gt"><div id="google_translate_element"></div></div>
+
+<div id="langGate" class="notranslate">
+  <div class="box">
+    <h1>Choose your language</h1>
+    <p>You can change this later from the menu.</p>
+    <input class="search" id="langSearch" placeholder="Search language" autocomplete="off">
+    <div class="lang-list" id="langList"></div>
+  </div>
+</div>
+
+<div id="onboard" class="notranslate hide">
+  <div class="box">
+    <h2>Quick start</h2>
+    <p>Three steps to use Ironpetal safely.</p>
+    <div class="steps">
+      <div class="step"><b>Step 1</b>Create an Ironpetal account if you want comments or public product login. Accounts stay on this device unless you export them.</div>
+      <div class="step"><b>Step 2</b>Open a product from the home grid. Some products ask: public shared login or your own login inside that product.</div>
+      <div class="step"><b>Step 3</b>Use the thin Ironpetal bar inside products to return home. Never share your password.</div>
+    </div>
+    <div class="row">
+      <button type="button" class="btn btn-blue" data-act="onboard-done">Got it</button>
+      <button type="button" class="btn btn-soft" data-act="nav" data-id="account">Create account</button>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="notranslate">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <div class="top">
+      <div class="title" id="topTitle">Ironpetal</div>
+      <div class="menu-wrap">
+        <button class="icon" type="button" data-act="menu" aria-label="menu">☰</button>
+        <div class="menu" id="menu">
+          <button type="button" data-act="lang">Language</button>
+          <button type="button" data-act="home">Home</button>
+          <button type="button" data-act="account">Account</button>
+          <button type="button" data-act="export">Export account backup</button>
+          <button type="button" data-act="lock">Lock session</button>
+        </div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="view on" id="homeView"></div>
+      <div class="view" id="accountView"></div>
+      <div id="frameWrap"><iframe id="frame" title="app" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal notranslate" id="gateModal">
+  <div class="box">
+    <h2>Enter product</h2>
+    <p id="gateMsg">Choose how to enter this product.</p>
+    <div class="row">
+      <button class="btn btn-dark" type="button" data-act="gate-public" id="gatePublicBtn">Public account</button>
+      <button class="btn btn-soft" type="button" data-act="gate-personal">Personal account</button>
+      <button class="btn btn-soft" type="button" data-act="gate-cancel">Cancel</button>
+    </div>
+    <p class="muted" id="gateHint" style="margin-top:12px"></p>
+    <p class="lock">Public login requires a signed-in Ironpetal session on this device. Shared credentials are rate-limited and device-bound.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // -------- Security helpers --------
+  function esc(s){return String(s==null?"":s).replace(/[&<>"'`]/g,function(c){return ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;","`":"&#96;"})[c];});}
+  function escAttr(s){return esc(s).replace(/\n/g," ");}
+  function safeJsonParse(raw, fallback){try{return JSON.parse(raw);}catch(e){return fallback;}}
+  function now(){return Date.now();}
+  function b64(u8){var s="";u8.forEach(function(x){s+=String.fromCharCode(x);});return btoa(s);}
+  function fromB64(s){var bin=atob(s);var u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u;}
+
+  async function pbkdf2Hash(password, saltB64){
+    var salt = saltB64 ? fromB64(saltB64) : crypto.getRandomValues(new Uint8Array(16));
+    var keyMaterial = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
+    var bits = await crypto.subtle.deriveBits({name:"PBKDF2", salt:salt, iterations:120000, hash:"SHA-256"}, keyMaterial, 256);
+    return {hash:b64(new Uint8Array(bits)), salt:b64(salt)};
+  }
+  async function verifyPass(password, saltB64, hashB64){
+    var r = await pbkdf2Hash(password, saltB64);
+    return r.hash === hashB64;
+  }
+
+  // Session: short-lived token, not role-based privilege
+  var SESSION_MS = 1000*60*60*8; // 8h
+  function getSession(){
+    var s = safeJsonParse(localStorage.getItem("ip_session"), null);
+    if(!s || !s.exp || s.exp < now() || !s.uid) return null;
+    return s;
+  }
+  function setSession(uid){
+    var tok = b64(crypto.getRandomValues(new Uint8Array(24)));
+    localStorage.setItem("ip_session", JSON.stringify({uid:uid, tok:tok, exp:now()+SESSION_MS}));
+  }
+  function clearSession(){ localStorage.removeItem("ip_session"); }
+
+  function getUserRecord(){
+    return safeJsonParse(localStorage.getItem("ip_user_v2"), null);
+  }
+  function saveUserRecord(u){
+    // never persist role/admin flags
+    var clean = {
+      username: String(u.username||"").toLowerCase().slice(0,24),
+      display: String(u.display||"").slice(0,40),
+      bio: String(u.bio||"").slice(0,280),
+      avatar: String(u.avatar||"").slice(0,350000),
+      salt: u.salt, hash: u.hash,
+      created: u.created || now(),
+      deviceId: u.deviceId || getDeviceId()
+    };
+    localStorage.setItem("ip_user_v2", JSON.stringify(clean));
+    // remove legacy insecure blob if present
+    localStorage.removeItem("ip_user");
+    return clean;
+  }
+  function getDeviceId(){
+    var id = localStorage.getItem("ip_device");
+    if(id && id.length>10) return id;
+    id = b64(crypto.getRandomValues(new Uint8Array(16)));
+    localStorage.setItem("ip_device", id);
+    return id;
+  }
+  function currentUser(){
+    var sess = getSession(); if(!sess) return null;
+    var u = getUserRecord(); if(!u || u.username !== sess.uid) return null;
+    return u;
+  }
+
+  // Rate limits
+  function rateOk(key, max, windowMs){
+    var k = "ip_rl_"+key;
+    var arr = safeJsonParse(localStorage.getItem(k), []);
+    var t = now();
+    arr = arr.filter(function(x){return t-x < windowMs;});
+    if(arr.length >= max){ localStorage.setItem(k, JSON.stringify(arr)); return false; }
+    arr.push(t); localStorage.setItem(k, JSON.stringify(arr)); return true;
+  }
+
+  // Comments local + signed by username (still device-local; labeled honestly)
+  function comments(id){ return safeJsonParse(localStorage.getItem("ip_c_"+id), []); }
+  function saveComments(id, arr){
+    var clean = (arr||[]).slice(0,40).map(function(c){
+      return {by:String(c.by||"anon").slice(0,24), text:String(c.text||"").slice(0,300), at:c.at||now()};
+    });
+    localStorage.setItem("ip_c_"+id, JSON.stringify(clean));
+  }
+
+  // Public login: derived per device, not plain constant in easy form
+  async function publicCreds(){
+    // Deterministic display user, password derived from device+site salt so source skim is harder
+    var base = "ironpetal";
+    var dig = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("ip-pub-"+getDeviceId()+"-v1"));
+    var hex = Array.from(new Uint8Array(dig)).map(function(x){return x.toString(16).padStart(2,"0");}).join("").slice(0,12);
+    // Still documents shared username; password is device-tied token stored ephemerally for autofill
+    return {user:base, pass: base + "_" + hex};
+  }
+
+  var RTL = {fa:1,ar:1,ur:1,he:1};
+  var LANGS = [["en","English"],["fa","فارسی"],["ja","日本語"],["tr","Türkçe"],["de","Deutsch"],["fr","Français"],["es","Español"],["ar","العربية"],["ru","Русский"],["zh","中文"],["hi","हिन्दी"],["ko","한국어"],["pt","Português"],["it","Italiano"]];
+  var PUBLIC = {lumera:1,host:1,store:1,forge:1,openvex:1};
+  var RUBIKA = {lumera:"https://rubika.ir/lumera__studio",forge:"https://rubika.ir/Rustedwarfar_ForgeofRust",openvex:"https://rubika.ir/openvex"};
+  var MODULES = [
+    {id:"lumera",title:"Lumera",src:"modules/lumera.html",group:"suite",desc:"Social canvas — posts and presence.",maker:"Hesam",studio:"@lumera__studio",rk:"lumera",icon:"✦"},
+    {id:"host",title:"Lumera Host",src:"modules/host.html",group:"suite",desc:"Publish pages from a host desk.",maker:"Hesam",studio:"@lumera__studio",rk:"lumera",icon:"▣"},
+    {id:"store",title:"Lumera Store",src:"modules/store.html",group:"suite",desc:"Orders and studio services.",maker:"Hesam",studio:"@lumera__studio",rk:"lumera",icon:"BAG"},
+    {id:"luvex",title:"Luvex",src:"modules/luvex.html",group:"suite",desc:"Site verification desk.",maker:"Hesam",studio:"@lumera__studio",rk:"lumera",icon:"◎"},
+    {id:"forge",title:"Rusted Forge",src:"modules/forge.html",group:"suite",desc:"Mods platform.",maker:"Amirhossein",studio:"@Rustedwarfar_ForgeofRust",rk:"forge",icon:"⚙"},
+    {id:"openvex",title:"OpenVex",src:"modules/openvex.html",group:"suite",desc:"OpenVex login desk.",maker:"Mohammad Erfan",studio:"@openvex",rk:"openvex",icon:"◆"},
+    {id:"northink",title:"Northink",src:"modules/northink.html",group:"lab",desc:"Local notes.",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"✎"},
+    {id:"pulseboard",title:"Pulseboard",src:"modules/pulseboard.html",group:"lab",desc:"Daily habits.",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"✓"},
+    {id:"gridcalc",title:"Gridcalc",src:"modules/gridcalc.html",group:"lab",desc:"Calculator.",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"＋"},
+    {id:"linkloom",title:"Linkloom",src:"modules/linkloom.html",group:"lab",desc:"Link saver.",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"⛓"},
+    {id:"quiettimer",title:"QuietTimer",src:"modules/quiettimer.html",group:"lab",desc:"Focus timer.",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"◷"}
+  ];
+  var CHANGELOG = [
+    "Security: PBKDF2 password hashing, timed sessions, CSP, XSS escaping, rate limits.",
+    "UX: onboarding, product search, clearer device-local account labels.",
+    "Suite shell: full-screen products with return path via embed bar."
+  ];
+
+  var state = {lang: localStorage.getItem("ip_lang")||"", view:"home", pending:null, filter:""};
+
+  function $(id){return document.getElementById(id);}
+
+  function showView(name){
+    state.view = name;
+    document.body.classList.toggle("full", name==="module");
+    $("homeView").classList.toggle("on", name==="home");
+    $("accountView").classList.toggle("on", name==="account");
+    $("frameWrap").classList.toggle("on", name==="module");
+    $("topTitle").textContent = name==="account"?"Account": name==="home"?"Ironpetal":(state.modTitle||"Ironpetal");
+    drawSidebar();
+  }
+
+  function drawSidebar(){
+    function btn(id,label,icon){
+      var on = (state.view==="home"&&id==="home")||(state.view==="account"&&id==="account")||(state.view==="module"&&state.modId===id);
+      return '<button type="button" class="side-btn'+(on?" on":"")+'" data-act="nav" data-id="'+escAttr(id)+'">'+esc(icon)+'<span class="tip">'+esc(label)+'</span></button>';
+    }
+    var html = btn("home","Home","⌂")+btn("account","Account","☺");
+    MODULES.forEach(function(m){ html += btn(m.id,m.title,m.icon||"•"); });
+    $("sidebar").innerHTML = html;
+  }
+
+  function filteredModules(){
+    var q = (state.filter||"").trim().toLowerCase();
+    if(!q) return MODULES;
+    return MODULES.filter(function(m){
+      return (m.title+" "+m.desc+" "+m.maker+" "+m.studio).toLowerCase().indexOf(q)>=0;
+    });
+  }
+
+  function drawHome(){
+    var u = currentUser();
+    var list = filteredModules();
+    var suite = list.filter(function(m){return m.group==="suite";});
+    var lab = list.filter(function(m){return m.group==="lab";});
+    function card(m){
+      var link = RUBIKA[m.rk]||RUBIKA.lumera;
+      var cs = comments(m.id).map(function(c){
+        return '<div class="comment"><b>'+esc(c.by)+'</b>: '+esc(c.text)+'</div>';
+      }).join("") || '<p class="muted">No comments on this device yet.</p>';
+      return '<article class="card">'+
+        '<h3>'+esc(m.icon)+" "+esc(m.title)+'</h3>'+
+        '<p class="muted">'+esc(m.desc)+'</p>'+
+        '<div class="creator">Maker: <b>'+esc(m.maker)+'</b><br>Studio <a href="'+escAttr(link)+'" target="_blank" rel="noopener noreferrer">'+esc(m.studio)+'</a></div>'+
+        '<div class="row"><button type="button" class="btn btn-dark" data-act="open" data-id="'+escAttr(m.id)+'">Open</button></div>'+
+        '<div style="margin-top:10px"><div class="muted">Comments on this device</div>'+cs+
+        (u?
+          '<input class="field" id="c_'+escAttr(m.id)+'" maxlength="300" placeholder="Write a comment">'+
+          '<button type="button" class="btn btn-soft" data-act="comment" data-id="'+escAttr(m.id)+'">Post</button>'
+          :'<p class="muted">Sign in on Account to comment.</p>')+
+        '</div></article>';
+    }
+    $("homeView").innerHTML =
+      '<div class="hero">'+
+        '<div class="badge">Device-local identity · hardened session</div>'+
+        '<h1>Crafted with intention.</h1>'+
+        '<p class="lead">Open the suite full-screen. Accounts and comments stay on this browser unless you export a backup. Public product login is rate-limited and needs a live session.</p>'+
+        '<div class="row">'+
+          '<button type="button" class="btn btn-blue" data-act="nav" data-id="account">'+(u?"My account":"Create account")+'</button>'+
+          '<button type="button" class="btn btn-dark" data-act="open" data-id="lumera">Open Lumera</button>'+
+          '<button type="button" class="btn btn-soft" data-act="onboard-show">Guide</button>'+
+        '</div>'+
+        (u?'<p class="muted" style="margin-top:10px">Session: <b>'+esc(u.username)+'</b> · expires automatically</p>':'')+
+      '</div>'+
+      '<div class="notice">Security note: Ironpetal shell stores credentials only as PBKDF2 hashes on this device. There is no server-side admin role to steal from localStorage. Shared “public” product login is optional and throttled.</div>'+
+      '<div class="feature">'+
+        '<div class="f"><h4>Search</h4><p>Filter suite and lab tools instantly.</p></div>'+
+        '<div class="f"><h4>Onboarding</h4><p>Three clear steps for new visitors.</p></div>'+
+        '<div class="f"><h4>Session lock</h4><p>Lock from the menu; reopen needs password.</p></div>'+
+        '<div class="f"><h4>Honest labels</h4><p>Device-local comments are labeled clearly.</p></div>'+
+      '</div>'+
+      '<div class="searchbar"><input class="field" id="prodSearch" placeholder="Search products (Lumera, Forge, timer…)" value="'+escAttr(state.filter)+'"></div>'+
+      '<div class="sec">What\'s new</div>'+
+      '<div class="notice">'+CHANGELOG.map(function(x){return "• "+esc(x);}).join("<br>")+'</div>'+
+      '<div class="sec">Suite</div>'+
+      '<div class="grid">'+(suite.map(card).join("")||'<p class="muted">No matches.</p>')+'</div>'+
+      '<div class="sec">Lab</div>'+
+      '<div class="grid">'+(lab.map(card).join("")||'<p class="muted">No matches.</p>')+'</div>';
+    var ps=$("prodSearch");
+    if(ps){ ps.oninput=function(){ state.filter=this.value; drawHome(); var el=$("prodSearch"); if(el){ el.focus(); el.selectionStart=el.selectionEnd=el.value.length; } }; }
+  }
+
+  function drawAccount(){
+    var u = currentUser();
+    var rec = getUserRecord();
+    if(!rec || !u){
+      // show login or register
+      var hasRec = !!getUserRecord();
+      $("accountView").innerHTML =
+        '<div class="acc-card">'+
+          '<h2 style="font-family:var(--serif);font-size:30px;font-weight:500;margin-bottom:8px">'+(hasRec?"Unlock account":"Create account")+'</h2>'+
+          '<p class="muted">Passwords are hashed with PBKDF2 (120k iterations) on this device. Nothing is uploaded from this shell.</p>'+
+          '<form id="authForm">'+
+            (hasRec?'' : '<label class="muted">Username</label><input class="field" id="regUser" maxlength="24" required autocomplete="username">')+
+            '<label class="muted">Password</label><input class="field" id="regPass" type="password" required autocomplete="'+(hasRec?"current-password":"new-password")+'">'+
+            (hasRec?'' : '<label class="muted">Display name</label><input class="field" id="regName" maxlength="40" autocomplete="nickname">')+
+            '<div class="row">'+
+              '<button class="btn btn-blue" type="submit">'+(hasRec?"Unlock":"Create account")+'</button>'+
+              '<button class="btn btn-soft" type="button" data-act="home">Back home</button>'+
+              (hasRec?'<button class="btn btn-soft" type="button" data-act="wipe">Remove local account</button>':'')+
+            '</div>'+
+            '<p class="err" id="regErr"></p>'+
+            '<p class="lock">Tip: use Export from the menu to back up your local profile JSON.</p>'+
+          '</form>'+
+        '</div>';
+      $("authForm").onsubmit = function(e){
+        e.preventDefault();
+        handleAuth();
+      };
+      return;
+    }
+    $("accountView").innerHTML =
+      '<div class="acc-card">'+
+        '<h2 style="font-family:var(--serif);font-size:30px;font-weight:500;margin-bottom:8px">Your account</h2>'+
+        '<div class="row" style="margin-bottom:10px">'+
+          '<img class="avatar" id="avPrev" alt="" src="'+escAttr(u.avatar||defaultAvatar())+'">'+
+          '<label class="btn btn-soft">Upload<input type="file" id="avFile" accept="image/*" hidden></label>'+
+        '</div>'+
+        '<label class="muted">Display name</label><input class="field" id="pName" value="'+escAttr(u.display||"")+'">'+
+        '<label class="muted">Bio</label><textarea class="field" id="pBio" maxlength="280">'+esc(u.bio||"")+'</textarea>'+
+        '<p class="muted">Username: <b>'+esc(u.username)+'</b></p>'+
+        '<div class="row">'+
+          '<button type="button" class="btn btn-dark" data-act="save-profile">Save profile</button>'+
+          '<button type="button" class="btn btn-soft" data-act="lock">Lock session</button>'+
+          '<button type="button" class="btn btn-soft" data-act="home">Home</button>'+
+        '</div>'+
+        '<p class="err" id="pMsg"></p>'+
+      '</div>';
+    var av=$("avFile");
+    if(av) av.onchange=function(){
+      var f=this.files&&this.files[0]; if(!f) return;
+      if(f.size>600000){ $("pMsg").textContent="Image too large (max ~600KB)"; return; }
+      var r=new FileReader();
+      r.onload=function(){ var cur=getUserRecord(); if(!cur) return; cur.avatar=String(r.result||""); saveUserRecord(cur); setSession(cur.username); $("avPrev").src=cur.avatar; };
+      r.readAsDataURL(f);
+    };
+  }
+
+  async function handleAuth(){
+    var err=$("regErr"); if(err) err.textContent="";
+    if(!rateOk("auth", 8, 60000)){ if(err) err.textContent="Too many tries. Wait a minute."; return; }
+    var rec=getUserRecord();
+    var pass=($("regPass")&&$("regPass").value)||"";
+    if(pass.length<6){ if(err) err.textContent="Password at least 6 characters"; return; }
+    try{
+      if(!rec){
+        var username=(($("regUser")&&$("regUser").value)||"").trim().toLowerCase();
+        var display=(($("regName")&&$("regName").value)||"").trim()||username;
+        if(username.length<3||!/^[a-z0-9_\.]+$/i.test(username)){ err.textContent="Username: 3+ letters/numbers _ ."; return; }
+        var hashed=await pbkdf2Hash(pass, null);
+        saveUserRecord({username:username,display:display,bio:"",avatar:"",salt:hashed.salt,hash:hashed.hash,created:now()});
+        setSession(username);
+        drawAccount();
+      } else {
+        var ok=await verifyPass(pass, rec.salt, rec.hash);
+        if(!ok){ err.textContent="Wrong password"; return; }
+        setSession(rec.username);
+        drawAccount();
+      }
+    }catch(ex){ if(err) err.textContent="Crypto error: "+ex.message; }
+  }
+
+  function defaultAvatar(){ return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23e8dccf' width='64' height='64'/%3E%3Ccircle cx='32' cy='26' r='12' fill='%23a89080'/%3E%3C/svg%3E"; }
+
+  function openGate(id){
+    state.pending=id;
+    var u=currentUser();
+    $("gateMsg").textContent="Public login needs an active Ironpetal session. Or continue with a personal account inside the product.";
+    $("gateHint").textContent=u?("Signed in as "+u.username+". Public autofill is rate-limited."):"Create/unlock an Ironpetal account first for public login.";
+    $("gatePublicBtn").disabled=!u;
+    $("gateModal").classList.add("on");
+  }
+  function closeGate(){ state.pending=null; $("gateModal").classList.remove("on"); }
+
+  async function openModule(id, mode){
+    var m=MODULES.find(function(x){return x.id===id;}); if(!m) return;
+    state.modId=id; state.modTitle=m.title; showView("module");
+    if(mode==="public"){
+      if(!currentUser()){ showView("home"); drawHome(); return; }
+      if(!rateOk("pub_"+id, 5, 10*60*1000)){ alert("Public login rate limit. Try later."); showView("home"); drawHome(); return; }
+      var cred=await publicCreds();
+      try{ localStorage.setItem("ip_public_login", JSON.stringify({user:cred.user, pass:cred.pass, site:id, exp:now()+60000})); }catch(e){}
+    } else {
+      try{ localStorage.removeItem("ip_public_login"); }catch(e){}
+    }
+    var frame=$("frame");
+    frame.onload=function(){
+      try{
+        frame.contentWindow.postMessage({type:"ip-lang", lang:state.lang||"en"}, "*");
+        if(frame.contentWindow.localStorage) frame.contentWindow.localStorage.setItem("ip_lang", state.lang||"en");
+      }catch(e){}
+    };
+    // only allow same-origin modules path
+    if(!/^modules\/[a-z0-9_\-]+\.html$/i.test(m.src)) return;
+    frame.src = m.src + "?embed=1&v=" + now() + (mode==="public"?"&pub=1":"");
+  }
+
+  function requestOpen(id){
+    if(id==="home"){ showView("home"); drawHome(); return; }
+    if(id==="account"){ showView("account"); drawAccount(); return; }
+    if(PUBLIC[id]){ openGate(id); return; }
+    openModule(id, "personal");
+  }
+
+  document.addEventListener("click", function(e){
+    var el=e.target;
+    for(var i=0;i<6&&el;i++,el=el.parentElement){ if(el.getAttribute&&el.getAttribute("data-act")) break; }
+    if(!el||!el.getAttribute) return;
+    var act=el.getAttribute("data-act"); if(!act) return;
+
+    if(act==="menu"){ $("menu").classList.toggle("open"); return; }
+    $("menu").classList.remove("open");
+
+    if(act==="lang"){ $("app").classList.remove("show"); $("langGate").classList.remove("hide"); return; }
+    if(act==="home"){ requestOpen("home"); return; }
+    if(act==="account"||(act==="nav"&&el.getAttribute("data-id")==="account")){ requestOpen("account"); return; }
+    if(act==="nav"){ requestOpen(el.getAttribute("data-id")); return; }
+    if(act==="open"){ requestOpen(el.getAttribute("data-id")); return; }
+    if(act==="comment"){
+      var u=currentUser(); if(!u) return;
+      if(!rateOk("cmt", 20, 60000)) return;
+      var id=el.getAttribute("data-id");
+      var input=$("c_"+id); if(!input) return;
+      var text=(input.value||"").trim(); if(!text) return;
+      var arr=comments(id); arr.unshift({by:u.username, text:text.slice(0,300), at:now()}); saveComments(id, arr); drawHome(); return;
+    }
+    if(act==="gate-public"){ var pid=state.pending; if(!currentUser()){ $("gateHint").textContent="Unlock your Ironpetal account first."; return;} closeGate(); if(pid) openModule(pid,"public"); return; }
+    if(act==="gate-personal"){ var p2=state.pending; closeGate(); if(p2) openModule(p2,"personal"); return; }
+    if(act==="gate-cancel"){ closeGate(); return; }
+    if(act==="save-profile"){
+      var cur=getUserRecord(); var sess=currentUser(); if(!cur||!sess) return;
+      cur.display=((($("pName")&&$("pName").value)||"").trim())||cur.username;
+      cur.bio=((($("pBio")&&$("pBio").value)||"").trim()).slice(0,280);
+      saveUserRecord(cur); setSession(cur.username);
+      if($("pMsg")){ $("pMsg").className="err ok"; $("pMsg").textContent="Saved"; }
+      return;
+    }
+    if(act==="lock"){ clearSession(); requestOpen("account"); return; }
+    if(act==="wipe"){
+      if(confirm("Remove local account from this browser?")){
+        localStorage.removeItem("ip_user_v2"); localStorage.removeItem("ip_user"); clearSession(); drawAccount();
+      }
+      return;
+    }
+    if(act==="export"){
+      var data={user:getUserRecord(), comments:{}};
+      MODULES.forEach(function(m){ data.comments[m.id]=comments(m.id); });
+      var blob=new Blob([JSON.stringify(data)],{type:"application/json"});
+      var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="ironpetal-backup.json"; a.click();
+      return;
+    }
+    if(act==="onboard-done"){ localStorage.setItem("ip_onboard","1"); $("onboard").classList.add("hide"); $("app").classList.add("show"); showView("home"); drawHome(); return; }
+    if(act==="onboard-show"){ $("onboard").classList.remove("hide"); return; }
+  });
+
+  function drawLang(filter){
+    var q=(filter||"").toLowerCase(); var box=$("langList"); box.innerHTML="";
+    LANGS.forEach(function(L){
+      if(q && L[0].indexOf(q)<0 && L[1].toLowerCase().indexOf(q)<0) return;
+      var b=document.createElement("button"); b.type="button"; b.className="lang-item";
+      b.innerHTML="<span>"+esc(L[1])+"</span><small>"+esc(L[0])+"</small>";
+      b.onclick=function(){ setLang(L[0]); };
+      box.appendChild(b);
+    });
+  }
+  function setLang(code){
+    state.lang=code;
+    try{ localStorage.setItem("ip_lang", code); }catch(e){}
+    document.documentElement.lang=code;
+    document.documentElement.dir=RTL[code]?"rtl":"ltr";
+    $("langGate").classList.add("hide");
+    if(!localStorage.getItem("ip_onboard")){ $("onboard").classList.remove("hide"); }
+    else { $("app").classList.add("show"); showView("home"); drawHome(); }
+  }
+  $("langSearch").oninput=function(){ drawLang(this.value); };
+  drawLang("");
+
+  window.addEventListener("message", function(e){
+    if(!e.data) return;
+    if(e.data.type==="ip-home") requestOpen("home");
+  });
+
+  // Migrate: ignore legacy insecure admin flags
+  try{ localStorage.removeItem("ip_user"); }catch(e){}
+
+  if(state.lang){ setLang(state.lang); }
+})();
+</script>
+</body>
+</html>
