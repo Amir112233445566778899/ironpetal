@@ -192,7 +192,7 @@ body.full .sidebar,body.full .top{display:none!important}body.full #app{display:
     }catch(e){ userCache=null; return null; }
   }
 
-  var PUBLIC={lumera:1,host:1,store:1,forge:1,openvex:1,luvex:1};
+  var PUBLIC={lumera:1,host:1,store:1,forge:1,openvex:1,luvex:1,gonam:1,rusted:1};
   var LANGS=[
     ["en","English","english"],
     ["af","Afrikaans","afrikaans"],
@@ -305,7 +305,7 @@ body.full .sidebar,body.full .top{display:none!important}body.full #app{display:
     ["zu","Zulu","zulu"]
   ];
   var RTL={fa:1,ar:1,ur:1,he:1,"fa-IR":1};
-  var RUBIKA={lumera:"https://rubika.ir/lumera__studio",forge:"https://rubika.ir/Rustedwarfar_ForgeofRust",openvex:"https://rubika.ir/openvex"};
+  var RUBIKA={lumera:"https://rubika.ir/lumera__studio",forge:"https://rubika.ir/Rustedwarfar_ForgeofRust",openvex:"https://rubika.ir/openvex",rusted:"https://rubika.ir/rusted_warfar__iran"};
   var MODULES=[
     {id:"lumera",title:"Lumera",src:"modules/lumera.html",group:"suite",desc:"Social canvas",maker:"Hesam",studio:"@lumera__studio",rk:"lumera",icon:"L",color:"#5b4b8a"},
     {id:"host",title:"Lumera Host",src:"modules/host.html",group:"suite",desc:"Hosting desk",maker:"Hesam",studio:"@lumera__studio",rk:"lumera",icon:"H",color:"#0f766e"},
@@ -317,7 +317,9 @@ body.full .sidebar,body.full .top{display:none!important}body.full #app{display:
     {id:"pulseboard",title:"Pulseboard",src:"modules/pulseboard.html",group:"lab",desc:"Habits",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"P",color:"#7c3aed"},
     {id:"gridcalc",title:"Gridcalc",src:"modules/gridcalc.html",group:"lab",desc:"Calculator",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"G",color:"#0369a1"},
     {id:"linkloom",title:"Linkloom",src:"modules/linkloom.html",group:"lab",desc:"Links",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"K",color:"#be123c"},
-    {id:"quiettimer",title:"QuietTimer",src:"modules/quiettimer.html",group:"lab",desc:"Focus timer",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"Q",color:"#0e7490"}
+    {id:"quiettimer",title:"QuietTimer",src:"modules/quiettimer.html",group:"lab",desc:"Focus timer",maker:"Ironpetal Lab",studio:"@lumera__studio",rk:"lumera",icon:"Q",color:"#0e7490"},
+    {id:"gonam",title:"Gonam News",src:"modules/gonam.html",group:"suite",desc:"Persian newsroom 48h",maker:"Gonam",studio:"@gonam",rk:"gonam",icon:"G",color:"#b91c1c"},
+    {id:"rusted",title:"Rusted.ir",src:"modules/rusted.html",group:"suite",desc:"Rusted Warfare Iran",maker:"Rusted Warfare Iran",studio:"@rusted_warfar_iran",rk:"forge",icon:"R",color:"#c2410c"}
   ];
   var state={lang:localStorage.getItem("ip_lang")||"",view:"home",pending:null,filter:"",comments:{}};
   function $(id){return document.getElementById(id);}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src * data: blob: 'unsafe-inline' 'unsafe-eval'; frame-src * https://rusted.ir https://*.rusted.ir;">
+<title>راستد وارفار ایران | Rusted Warfare Iran</title>
+<style>
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#0a0a0a}
+  #bar{position:fixed;top:0;left:0;right:0;height:36px;z-index:9999;display:flex;align-items:center;justify-content:space-between;padding:0 10px;background:rgba(10,10,12,.92);border-bottom:1px solid #333;font-family:Tahoma,sans-serif;font-size:12px;color:#ddd}
+  #bar a,#bar button{color:#fff;background:#222;border:1px solid #444;border-radius:8px;padding:5px 10px;text-decoration:none;cursor:pointer;font:inherit}
+  #frame{position:fixed;top:36px;left:0;right:0;bottom:0;width:100%;height:calc(100% - 36px);border:0}
+  .note{color:#888;font-size:11px}
+</style>
+</head>
+<body>
+<div id="bar" class="notranslate">
+  <span>Rusted Warfare Iran · rusted.ir</span>
+  <span>
+    <button type="button" id="btnHome">Ironpetal</button>
+    <a href="https://rusted.ir/" target="_blank" rel="noopener">باز کردن مستقیم</a>
+  </span>
+</div>
+<iframe id="frame" src="https://rusted.ir/" title="Rusted Warfare Iran" allow="fullscreen; autoplay" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<script>
+document.getElementById('btnHome').onclick=function(){
+  try{ parent.postMessage({type:'ip-home'},'*'); }catch(e){}
+  if(window.top===window) location.href='../index.html';
+};
+// If iframe blocked by X-Frame-Options, show note
+setTimeout(function(){
+  try{
+    var f=document.getElementById('frame');
+    // cannot read cross-origin; leave as is
+  }catch(e){}
+}, 2000);
+</script>
+</body>
+</html>
