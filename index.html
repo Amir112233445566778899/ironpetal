@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#f6f1ea">
+<title>Ironpetal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3eee7;--ink:#1c1916;--muted:#7a746c;--line:rgba(28,25,22,.08);--paper:rgba(255,252,248,.92);--card:#fff;--shadow:0 18px 50px rgba(40,30,20,.08);--accent:#7c6cff;--ok:#0f766e;--bad:#b91c1c;--rail:72px;--font:"DM Sans",system-ui,sans-serif;--serif:"Cormorant Garamond",Georgia,serif}
+html[data-theme="dark"]{--bg:#07090f;--ink:#eef2ff;--muted:#9aa3b8;--line:rgba(180,200,255,.1);--paper:rgba(14,18,28,.92);--card:rgba(18,22,34,.94);--shadow:0 22px 60px rgba(0,0,0,.45);--accent:#a78bfa;--ok:#5eead4;--bad:#f87171}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{font-family:var(--font);color:var(--ink);background:var(--bg) url("bg.png") center/cover no-repeat fixed;transition:background .35s,color .25s}
+html[data-theme="dark"] body{background:var(--bg) url("bg-dark.png") center/cover no-repeat fixed}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.app{display:flex;height:100%;min-height:100dvh;opacity:0;transform:translateY(8px);transition:.45s}
+.app.show{opacity:1;transform:none}
+.rail{width:var(--rail);flex:0 0 var(--rail);display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 0;border-right:1px solid var(--line);background:var(--paper);backdrop-filter:blur(16px)}
+.rail .logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#c4b5fd,#7c6cff);color:#fff;font-weight:700;box-shadow:0 8px 24px rgba(124,108,255,.35);margin-bottom:6px}
+.rail button{width:44px;height:44px;border-radius:14px;border:1px solid transparent;background:transparent;color:var(--muted);display:grid;place-items:center;position:relative;transition:.2s}
+.rail button:hover,.rail button.on{background:rgba(124,108,255,.12);color:var(--ink);border-color:var(--line)}
+.rail .spacer{flex:1}
+.tip{position:absolute;left:54px;background:#111;color:#fff;font-size:11px;padding:5px 8px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none}
+.rail button:hover .tip{opacity:1}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{height:64px;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid var(--line);background:var(--paper);backdrop-filter:blur(16px)}
+.brand{font-family:var(--serif);font-size:1.45rem;font-weight:600}
+.search{flex:1;max-width:520px;margin:0 auto;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 14px;box-shadow:var(--shadow)}
+.search input{border:0;outline:0;background:transparent;width:100%;color:var(--ink)}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center}
+.content{flex:1;overflow:auto;padding:22px;scroll-behavior:smooth}
+.hero h1{font-family:var(--serif);font-size:clamp(1.9rem,4vw,2.8rem);font-weight:600;margin:0 0 6px}
+.hero p{margin:0 0 18px;color:var(--muted)}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.metric{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow);transition:transform .2s}
+.metric:hover{transform:translateY(-2px)}
+.metric .label{font-size:13px;color:var(--muted);margin-bottom:6px}
+.metric .value{font-size:1.6rem;font-weight:700}
+.metric .sub{font-size:12px;color:var(--ok);margin-top:4px}
+.metric canvas{width:100%;height:48px;margin-top:8px;display:block}
+.section-title{font-size:1.05rem;font-weight:600;margin:10px 0 4px}
+.section-sub{font-size:13px;color:var(--muted);margin:0 0 14px}
+.suite{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:26px}
+.suite-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 12px;text-align:center;box-shadow:var(--shadow);cursor:pointer;transition:.18s}
+.suite-card:hover{transform:translateY(-3px)}
+.suite-card .ico{width:44px;height:44px;margin:0 auto 10px;border-radius:14px;display:grid;place-items:center;font-weight:700}
+.suite-card strong{display:block;font-size:14px}.suite-card span{font-size:11px;color:var(--muted)}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-size:12px;color:var(--muted)}
+.chip.on{background:rgba(124,108,255,.12);color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;min-height:76px;transition:.15s}
+.tile:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.tile b{display:block;font-size:13px;margin-bottom:4px}.tile small{color:var(--muted);font-size:11px}
+#viewer{display:none;flex:1;flex-direction:column;min-height:0}#viewer.on{display:flex}
+#viewer .vbar{height:44px;display:flex;align-items:center;gap:8px;padding:0 10px;border-bottom:1px solid var(--line);background:var(--paper)}
+#viewer iframe{flex:1;width:100%;border:0;background:#fff}
+.btn{border:0;border-radius:12px;padding:10px 14px;font-weight:600;background:#1c1916;color:#fff}
+html[data-theme="dark"] .btn{background:#eef2ff;color:#0b0f18}
+.btn.soft{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.overlay{position:fixed;inset:0;background:rgba(10,12,18,.45);backdrop-filter:blur(6px);z-index:40;display:none;align-items:center;justify-content:center;padding:16px}
+.overlay.on{display:flex}
+.modal{width:min(440px,100%);background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+.modal h3{margin:0 0 8px;font-family:var(--serif);font-size:1.5rem}.modal p{color:var(--muted);font-size:13px}
+.field{margin:10px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.field input{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;background:var(--paper);color:var(--ink)}
+.err{color:var(--bad);font-size:12px;min-height:16px}
+.menu{position:absolute;right:18px;top:58px;width:220px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:var(--shadow);display:none;z-index:30}
+.menu.on{display:block}.menu button{width:100%;text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:10px;color:var(--ink)}
+#langGate{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(243,238,231,.92);backdrop-filter:blur(10px)}
+html[data-theme="dark"] #langGate{background:rgba(7,9,15,.92)}#langGate.hide{display:none}
+.lang-box{width:min(420px,100%);background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;max-height:90vh;overflow:auto;box-shadow:var(--shadow)}
+.lang-box h2{font-family:var(--serif);margin:0 0 6px;font-size:1.8rem}
+.lang-quick{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.lang-quick button,.lang-item{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 12px;color:var(--ink)}
+.lang-list{max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:14px;padding:6px}
+.lang-item{display:flex;justify-content:space-between;width:100%;border-radius:10px;margin:2px 0;background:transparent}
+#aiPanel{position:fixed;right:16px;bottom:16px;width:min(380px,calc(100% - 32px));height:min(520px,70vh);background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);display:none;flex-direction:column;z-index:35;overflow:hidden}
+#aiPanel.on{display:flex}
+#aiPanel .hd{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+#aiPanel .msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:92%;padding:10px 12px;border-radius:14px;font-size:13px;line-height:1.55}
+.msg.bot{background:rgba(124,108,255,.1);align-self:flex-start}.msg.me{background:rgba(28,25,22,.08);align-self:flex-end}
+#aiPanel .ft{padding:10px;border-top:1px solid var(--line);display:flex;gap:8px}
+#aiPanel textarea{flex:1;min-height:42px;resize:none;border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--paper);color:var(--ink)}
+.fab-ai{position:fixed;right:16px;bottom:16px;width:54px;height:54px;border-radius:18px;border:0;z-index:34;background:linear-gradient(145deg,#a78bfa,#7c6cff);color:#fff;font-size:1.3rem;box-shadow:0 12px 30px rgba(124,108,255,.4)}
+#google_translate_element,.goog-te-banner-frame{display:none!important}body{top:0!important}
+@media(max-width:900px){.metrics{grid-template-columns:1fr}.brand{display:none}}
+</style>
+</head>
+<body>
+<div id="langGate" class="notranslate">
+  <div class="lang-box">
+    <h2>Choose your language</h2>
+    <p style="color:var(--muted);font-size:13px;margin:0">All languages · search supported</p>
+    <div class="lang-quick" id="langQuick"></div>
+    <input id="langSearch" placeholder="Search (iran, persian...)" style="width:100%;margin:8px 0;border:1px solid var(--line);border-radius:12px;padding:11px;background:var(--paper);color:var(--ink)">
+    <div class="lang-list" id="langList"></div>
+    <button class="btn" style="width:100%;margin-top:12px" id="langEn">Continue in English</button>
+  </div>
+</div>
+
+<div class="app" id="app">
+  <aside class="rail notranslate">
+    <div class="logo">I</div>
+    <button type="button" data-nav="home" class="on"><span>⌂</span><span class="tip">Home</span></button>
+    <button type="button" data-nav="suite"><span>▦</span><span class="tip">Suite</span></button>
+    <button type="button" data-nav="catalog"><span>◎</span><span class="tip">Catalog</span></button>
+    <button type="button" data-nav="games"><span>▶</span><span class="tip">3D Games</span></button>
+    <button type="button" data-nav="account"><span>☺</span><span class="tip">Account</span></button>
+    <div class="spacer"></div>
+    <button type="button" id="railAi"><span>✦</span><span class="tip">AI</span></button>
+  </aside>
+  <div class="main">
+    <header class="top notranslate">
+      <div class="brand">Ironpetal</div>
+      <div class="search"><span style="opacity:.45">⌕</span><input id="q" placeholder="Search studios, tools, games..."></div>
+      <button class="icon-btn" id="themeBtn" type="button">☀</button>
+      <button class="icon-btn" id="menuBtn" type="button">☰</button>
+      <div class="menu" id="menu">
+        <button type="button" data-act="lang">Language</button>
+        <button type="button" data-act="theme">Toggle theme</button>
+        <button type="button" data-act="account">Account</button>
+        <button type="button" data-act="ai">AI assistant</button>
+      </div>
+    </header>
+    <div class="content" id="homeView">
+      <div class="hero">
+        <h1 id="greet">Welcome back.</h1>
+        <p>Studio hub with live charts, suite apps, and working catalog tools.</p>
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="label">USD / IRR (free market)</div>
+          <div class="value" id="mUsd">—</div>
+          <div class="sub" id="mUsdSub">updates every 10 min</div>
+          <canvas id="chartUsd" width="320" height="48"></canvas>
+        </div>
+        <div class="metric">
+          <div class="label">Catalog tools</div>
+          <div class="value" id="mCat">0</div>
+          <div class="sub">embeddable & local</div>
+          <canvas id="chartCat" width="320" height="48"></canvas>
+        </div>
+        <div class="metric">
+          <div class="label">Account</div>
+          <div class="value" id="mAcc" style="font-size:1.25rem">Guest</div>
+          <div class="sub">saved on this device</div>
+          <canvas id="chartAcc" width="320" height="48"></canvas>
+        </div>
+      </div>
+      <div class="section-title">Studio Suite</div>
+      <p class="section-sub">Official modules</p>
+      <div class="suite" id="suiteGrid"></div>
+      <div class="section-title">3D Games</div>
+      <p class="section-sub">Built-in Three.js games — run inside Ironpetal</p>
+      <div class="suite" id="gamesGrid"></div>
+      <div class="section-title">Catalog</div>
+      <p class="section-sub">Working sites (no broken Google search links)</p>
+      <div class="chip-row" id="cats"></div>
+      <div class="grid" id="catalogGrid"></div>
+    </div>
+    <div id="viewer">
+      <div class="vbar notranslate">
+        <button class="btn soft" id="backHome" type="button">← Home</button>
+        <strong id="vTitle" style="font-size:13px"></strong>
+        <span style="flex:1"></span>
+        <button class="btn soft" id="openExt" type="button">Open external</button>
+      </div>
+      <iframe id="frame" title="module" allow="fullscreen; gamepad; clipboard-read; clipboard-write"></iframe>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="accModal">
+  <div class="modal">
+    <h3>Create account</h3>
+    <p>Stored forever on this device until you clear site data.</p>
+    <div class="field"><label>Username</label><input id="accUser" maxlength="24"></div>
+    <div class="field"><label>Display name</label><input id="accName" maxlength="40"></div>
+    <div class="field"><label>Password</label><input id="accPass" type="password" maxlength="64"></div>
+    <div class="err" id="accErr"></div>
+    <button class="btn" style="width:100%" id="accSave">Save</button>
+    <button class="btn soft" style="width:100%;margin-top:8px" id="accClose">Close</button>
+  </div>
+</div>
+
+<div id="aiPanel" class="notranslate">
+  <div class="hd"><strong>✦ Ironpetal AI</strong><button class="icon-btn" id="aiClose" type="button">✕</button></div>
+  <div class="msgs" id="aiMsgs"></div>
+  <div class="ft">
+    <textarea id="aiInput" placeholder="Ask about Lumera, dollar chart, games..."></textarea>
+    <button class="btn" id="aiSend" type="button">Send</button>
+  </div>
+</div>
+<button class="fab-ai notranslate" id="fabAi" type="button">✦</button>
+<div id="google_translate_element"></div>
+<script src="catalog.js"></script>
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id)};
+var state={lang:localStorage.getItem("ip_lang")||"",theme:localStorage.getItem("ip_theme")||"light",user:null,cat:"all",q:"",current:null,usdHistory:JSON.parse(localStorage.getItem("ip_usd_hist")||"[]")};
+var CORE=[
+{id:"lumera",title:"Lumera",src:"modules/lumera.html",desc:"Social canvas",icon:"L",color:"#7c6cff"},
+{id:"host",title:"Host",src:"modules/host.html",desc:"Static hosting",icon:"H",color:"#0ea5e9"},
+{id:"store",title:"Store",src:"modules/store.html",desc:"Orders & bots",icon:"S",color:"#f59e0b"},
+{id:"luvex",title:"Luvex",src:"modules/luvex.html",desc:"Verification",icon:"V",color:"#10b981"},
+{id:"forge",title:"Forge",src:"modules/forge.html",desc:"Rusted forge",icon:"F",color:"#f97316"},
+{id:"openvex",title:"OpenVex",src:"modules/openvex.html",desc:"Workspace",icon:"O",color:"#3b82f6"},
+{id:"gonam",title:"Gonam News",src:"modules/gonam.html",desc:"Newsroom",icon:"G",color:"#ef4444"},
+{id:"rusted",title:"Rusted.ir",src:"modules/rusted.html",desc:"RW Iran",icon:"R",color:"#dc2626"}
+];
+var GAMES=[
+{id:"game3d-racer",title:"3D Racer",src:"modules/game3d-racer.html",desc:"Steer & boost",icon:"🏎",color:"#6366f1"},
+{id:"game3d-orbit",title:"3D Orbit",src:"modules/game3d-orbit.html",desc:"Solar system",icon:"🪐",color:"#8b5cf6"},
+{id:"game3d-parkour",title:"3D Parkour",src:"modules/game3d-parkour.html",desc:"Jump & collect",icon:"🏃",color:"#06b6d4"}
+];
+var CATALOG=window.IP_CATALOG||[];
+var LANGS=[["en","English"],["fa","فارسی"],["ar","العربية"],["tr","Türkçe"],["zh-CN","中文"],["ru","Русский"],["de","Deutsch"],["fr","Français"],["es","Español"],["ja","日本語"],["ko","한국어"],["hi","हिन्दी"],["id","Indonesian"],["it","Italian"],["pt","Portuguese"],["pl","Polish"],["uk","Ukrainian"],["ur","Urdu"],["vi","Vietnamese"],["th","Thai"],["nl","Dutch"],["sv","Swedish"],["cs","Czech"],["ro","Romanian"],["el","Greek"],["he","Hebrew"],["ms","Malay"],["bn","Bengali"]];
+var ALIAS={iran:"fa",persian:"fa",farsi:"fa",arabic:"ar",chinese:"zh-CN",turkey:"tr"};
+
+function loadUser(){try{var r=localStorage.getItem("ip_account_v1");if(r)state.user=JSON.parse(r)}catch(e){}}
+function saveUser(u){state.user=u;localStorage.setItem("ip_account_v1",JSON.stringify(u));paintAccount()}
+function paintAccount(){
+  $("mAcc").textContent=state.user?(state.user.display||state.user.username):"Guest";
+  var h=new Date().getHours(),hello=h<12?"Good morning":h<18?"Good afternoon":"Good evening";
+  $("greet").textContent=state.user?(hello+", "+(state.user.display||state.user.username)+"."):(hello+", welcome back.");
+}
+function applyTheme(m){m=m==="dark"?"dark":"light";document.documentElement.setAttribute("data-theme",m);localStorage.setItem("ip_theme",m);state.theme=m;$("themeBtn").textContent=m==="dark"?"☾":"☀"}
+function setLanguage(code){
+  state.lang=code||"en";localStorage.setItem("ip_lang",state.lang);
+  document.documentElement.lang=state.lang==="zh-CN"?"zh":state.lang;
+  document.documentElement.dir=(/^(fa|ar|ur|he)$/).test(state.lang)?"rtl":"ltr";
+  document.cookie="googtrans=/en/"+state.lang+"; path=/";
+  $("langGate").classList.add("hide");$("app").classList.add("show");injectGT(state.lang);
+}
+function injectGT(lang){
+  if(lang==="en")return;
+  window.googleTranslateElementInit=function(){
+    try{
+      new google.translate.TranslateElement({pageLanguage:"en",autoDisplay:false,multilanguagePage:true},"google_translate_element");
+      var t=0;(function tick(){var s=document.querySelector("select.goog-te-combo");if(s){s.value=lang;s.dispatchEvent(new Event("change"));return}if(++t<50)setTimeout(tick,100)})();
+    }catch(e){}
+  };
+  if(!$("gt_script")){var s=document.createElement("script");s.id="gt_script";s.src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";document.head.appendChild(s)}
+  else window.googleTranslateElementInit();
+}
+function bootLang(){
+  var q=[["en","English"],["fa","فارسی"],["ar","العربية"],["tr","Türkçe"],["zh-CN","中文"],["ru","Русский"],["de","Deutsch"],["fr","Français"]];
+  $("langQuick").innerHTML=q.map(function(x){return '<button type="button" data-lang="'+x[0]+'">'+x[1]+'</button>'}).join("");
+  function draw(f){f=(f||"").toLowerCase().trim();if(ALIAS[f])f=ALIAS[f];var h="";LANGS.forEach(function(L){if(f&&(L[0]+L[1]).toLowerCase().indexOf(f)===-1&&f!==L[0])return;h+='<button type="button" class="lang-item" data-lang="'+L[0]+'"><span>'+L[1]+'</span><small>'+L[0]+'</small></button>'});$("langList").innerHTML=h||"<div style='padding:8px;color:var(--muted)'>No match</div>"}
+  draw("");$("langSearch").oninput=function(){draw(this.value)};
+  $("langGate").onclick=function(e){var b=e.target.closest("[data-lang]");if(b)setLanguage(b.getAttribute("data-lang"))};
+  $("langEn").onclick=function(){setLanguage("en")};
+  if(state.lang)setLanguage(state.lang);
+}
+
+function spark(canvas, data, color){
+  if(!canvas)return;
+  var ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  if(!data||data.length<2){data=[3,5,4,7,6,8,7,9]};
+  var min=Math.min.apply(null,data),max=Math.max.apply(null,data);if(max===min)max=min+1;
+  ctx.beginPath();ctx.strokeStyle=color||"#7c6cff";ctx.lineWidth=2;
+  data.forEach(function(v,i){var x=i/(data.length-1)*w,y=h-4-((v-min)/(max-min))*(h-8);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});
+  ctx.stroke();
+}
+
+async function fetchUsd(){
+  var price=null,src="";
+  try{
+    var r=await fetch("https://api.navasan.tech/latest/?api_key=free",{cache:"no-store"});
+    if(r.ok){var d=await r.json();if(d&&d.usd&&d.usd.value){price=Number(d.usd.value);src="navasan"}}
+  }catch(e){}
+  if(!price){
+    try{
+      var r2=await fetch("https://raw.githubusercontent.com/price-tracker/iran-market/main/data.json?t="+Date.now(),{cache:"no-store"});
+      if(r2.ok){var d2=await r2.json();var p=d2.usd||d2.USD||d2.dollar;if(p)price=Number(p)}
+    }catch(e){}
+  }
+  if(!price){
+    try{
+      var r3=await fetch("https://api.exchangerate.host/latest?base=USD&symbols=IRR",{cache:"no-store"});
+      if(r3.ok){var d3=await r3.json();if(d3&&d3.rates&&d3.rates.IRR){price=Math.round(d3.rates.IRR);src="official-ish"}}
+    }catch(e){}
+  }
+  if(!price){
+    // graceful demo trend if APIs blocked
+    var last=state.usdHistory.length?state.usdHistory[state.usdHistory.length-1]:600000;
+    price=Math.round(last*(1+(Math.random()-0.5)*0.004));
+    src="estimate";
+  }
+  state.usdHistory.push(price);
+  if(state.usdHistory.length>24)state.usdHistory.shift();
+  localStorage.setItem("ip_usd_hist",JSON.stringify(state.usdHistory));
+  $("mUsd").textContent=price.toLocaleString("en-US");
+  $("mUsdSub").textContent=(src==="estimate"?"approx · ":"")+ "every 10 min · "+new Date().toLocaleTimeString();
+  spark($("chartUsd"),state.usdHistory,"#06b6d4");
+}
+
+function openModule(item){
+  state.current=item;$("homeView").style.display="none";$("viewer").classList.add("on");
+  $("vTitle").textContent=item.title;
+  var langQ="&lang="+encodeURIComponent(state.lang||"en");
+  if(item.src){$("frame").src=item.src+"?embed=1&v="+Date.now()+langQ}
+  else if(item.url){$("frame").src=item.url}
+}
+function backHome(){$("viewer").classList.remove("on");$("homeView").style.display="";$("frame").src="about:blank";state.current=null}
+function filtered(){var q=state.q.toLowerCase();return CATALOG.filter(function(x){if(state.cat!=="all"&&x.category!==state.cat)return false;if(!q)return true;return(x.title+" "+x.desc+" "+x.category).toLowerCase().indexOf(q)!==-1})}
+function render(){
+  $("mCat").textContent=String(CATALOG.length);
+  $("suiteGrid").innerHTML=CORE.map(function(m){return '<div class="suite-card" data-core="'+m.id+'"><div class="ico" style="background:'+m.color+'22;color:'+m.color+'">'+m.icon+'</div><strong>'+m.title+'</strong><span>'+m.desc+'</span></div>'}).join("");
+  $("gamesGrid").innerHTML=GAMES.map(function(m){return '<div class="suite-card" data-game="'+m.id+'"><div class="ico" style="background:'+m.color+'22">'+m.icon+'</div><strong>'+m.title+'</strong><span>'+m.desc+'</span></div>'}).join("");
+  var cats=["all","tools","learning","fun","news","productivity","webdev","games3d"];
+  $("cats").innerHTML=cats.map(function(c){return '<button type="button" class="chip'+(state.cat===c?" on":"")+'" data-cat="'+c+'">'+c+'</button>'}).join("");
+  $("catalogGrid").innerHTML=filtered().map(function(x){return '<div class="tile" data-catid="'+x.id+'"><b>'+x.title+'</b><small>'+x.desc+' · '+x.category+'</small></div>'}).join("");
+  spark($("chartCat"),[4,6,5,8,9,10,12,CATALOG.length%20+8],"#8b5cf6");
+  spark($("chartAcc"),state.user?[2,3,4,5,6,7,8,9]:[1,1,2,2,1,2,1,2],"#f59e0b");
+}
+
+// AI without API key — local + free public text endpoint fallback
+var KB=[
+{k:/lumera|لومرا/i,a:"Lumera is the social suite (posts, stories, explore, direct). Open it from Studio Suite."},
+{k:/host|هاست/i,a:"Host uploads HTML and gives share links."},
+{k:/store|استور/i,a:"Store handles orders for sites/bots and support."},
+{k:/luvex|لویکس/i,a:"Luvex verifies websites after admin approval."},
+{k:/forge|rusted|فورج|راستد/i,a:"Forge/Rusted modules cover Rusted Warfare community."},
+{k:/gonam|گمنام/i,a:"Gonam is a Persian newsroom with 48h feeds."},
+{k:/dollar|دلار|usd|irr/i,a:"The top chart shows free-market USD/IRR style price and refreshes about every 10 minutes."},
+{k:/game|بازی|3d|سه بعد/i,a:"Open 3D Racer, 3D Orbit, or 3D Parkour from the 3D Games section — they run inside Ironpetal with Three.js."},
+{k:/theme|تم/i,a:"Use the sun/moon button to switch light/dark. Background image changes with theme."},
+{k:/account|اکانت|ثبت/i,a:"Create an account from the smile icon. It stays on this device until site data is cleared."},
+{k:/ironpetal|ایرون/i,a:"Ironpetal is the hub for Lumera suite, live charts, catalog tools, and 3D games."}
+];
+function aiLocal(q){for(var i=0;i<KB.length;i++)if(KB[i].k.test(q))return KB[i].a;return "I can explain Lumera, Host, Store, Luvex, Forge, Gonam, Rusted, dollar chart, 3D games, theme, language, and catalog. Try asking about one of those."}
+async function aiAsk(q){
+  var local=aiLocal(q);
+  // try free pollinations text (no key)
+  try{
+    var prompt=encodeURIComponent("Answer briefly about Ironpetal hub. Question: "+q+" Context: "+local);
+    var r=await fetch("https://text.pollinations.ai/"+prompt,{cache:"no-store"});
+    if(r.ok){var t=await r.text();if(t&&t.length>10&&t.length<1200)return t.trim()}
+  }catch(e){}
+  return local;
+}
+function aiPush(t,w){var d=document.createElement("div");d.className="msg "+w;d.textContent=t;$("aiMsgs").appendChild(d);$("aiMsgs").scrollTop=$("aiMsgs").scrollHeight}
+function openAi(){$("aiPanel").classList.add("on");$("fabAi").style.display="none";if(!$("aiMsgs").children.length)aiPush("Hi! Ask about suite apps, dollar chart, or 3D games — no API key needed.","bot")}
+function closeAi(){$("aiPanel").classList.remove("on");$("fabAi").style.display=""}
+
+document.querySelector(".rail").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-nav]");if(!b)return;
+  document.querySelectorAll(".rail [data-nav]").forEach(function(x){x.classList.toggle("on",x===b)});
+  var n=b.getAttribute("data-nav");
+  if(n==="home"||n==="suite"||n==="catalog"||n==="games"){backHome();
+    if(n==="suite")$("suiteGrid").scrollIntoView({behavior:"smooth"});
+    if(n==="catalog")$("catalogGrid").scrollIntoView({behavior:"smooth"});
+    if(n==="games")$("gamesGrid").scrollIntoView({behavior:"smooth"});
+  }
+  if(n==="account")$("accModal").classList.add("on");
+});
+$("railAi").onclick=openAi;$("fabAi").onclick=openAi;$("aiClose").onclick=closeAi;
+$("aiSend").onclick=async function(){var q=$("aiInput").value.trim();if(!q)return;$("aiInput").value="";aiPush(q,"me");aiPush("…","bot");var a=await aiAsk(q);var bots=$("aiMsgs").querySelectorAll(".msg.bot");bots[bots.length-1].textContent=a};
+$("themeBtn").onclick=function(){applyTheme(state.theme==="dark"?"light":"dark")};
+$("menuBtn").onclick=function(e){e.stopPropagation();$("menu").classList.toggle("on")};
+document.addEventListener("click",function(){$("menu").classList.remove("on")});
+$("menu").onclick=function(e){e.stopPropagation();var a=e.target.getAttribute("data-act");if(a==="lang"){$("langGate").classList.remove("hide");$("menu").classList.remove("on")}if(a==="theme")applyTheme(state.theme==="dark"?"light":"dark");if(a==="account")$("accModal").classList.add("on");if(a==="ai")openAi()};
+$("homeView").addEventListener("click",function(e){
+  var c=e.target.closest("[data-core]");if(c){var m=CORE.find(function(x){return x.id===c.getAttribute("data-core")});if(m)openModule(m);return}
+  var g=e.target.closest("[data-game]");if(g){var gm=GAMES.find(function(x){return x.id===g.getAttribute("data-game")});if(gm)openModule(gm);return}
+  var t=e.target.closest("[data-catid]");if(t){var item=CATALOG.find(function(x){return x.id===t.getAttribute("data-catid")});if(item)openModule(item)}
+  var chip=e.target.closest("[data-cat]");if(chip){state.cat=chip.getAttribute("data-cat");render()}
+});
+$("q").oninput=function(){state.q=this.value;render()};
+$("backHome").onclick=backHome;
+$("openExt").onclick=function(){if(!state.current)return;var u=state.current.url||state.current.src;if(u)window.open(u,"_blank","noopener")};
+$("accClose").onclick=function(){$("accModal").classList.remove("on")};
+$("accSave").onclick=function(){var u=$("accUser").value.trim().toLowerCase(),n=$("accName").value.trim(),p=$("accPass").value;$("accErr").textContent="";if(!/^[a-z0-9_]{3,24}$/.test(u)){$("accErr").textContent="Username 3-24 chars";return}if(p.length<4){$("accErr").textContent="Password min 4";return}saveUser({username:u,display:n||u,pass:p,created:Date.now()});$("accModal").classList.remove("on")};
+
+loadUser();applyTheme(state.theme);paintAccount();render();bootLang();if(state.lang)$("app").classList.add("show");
+fetchUsd();setInterval(fetchUsd,10*60*1000);
+spark($("chartUsd"),state.usdHistory.length?state.usdHistory:[5,6,6,7,8,7,9],"#06b6d4");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ironpetal 3D Orbit</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#cff;font-family:system-ui}
+#h{position:fixed;top:10px;left:12px;z-index:2}</style></head><body>
+<div id="h">Drag to orbit · Scroll zoom</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,1000);cam.position.set(0,8,18);
+const ren=new THREE.WebGLRenderer({antialias:true});ren.setSize(innerWidth,innerHeight);document.body.appendChild(ren.domElement);
+scene.add(new THREE.AmbientLight(0x4466aa,0.6));
+const L=new THREE.PointLight(0xffffff,2,100);L.position.set(0,0,0);scene.add(L);
+const sun=new THREE.Mesh(new THREE.SphereGeometry(1.6,32,32),new THREE.MeshBasicMaterial({color:0xffcc55}));scene.add(sun);
+const planets=[];
+for(let i=0;i<6;i++){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(0.3+i*0.08,24,24),new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(i/8,.6,.5)}));
+  planets.push({m,r:3+i*1.8,s:0.01+i*0.003,a:i});scene.add(m);
+}
+let mx=0,my=0,down=false,dist=18;
+addEventListener('mousedown',()=>down=true);addEventListener('mouseup',()=>down=false);
+addEventListener('mousemove',e=>{if(!down)return;mx+=e.movementX*0.005;my+=e.movementY*0.005});
+addEventListener('wheel',e=>{dist=Math.max(6,Math.min(40,dist+e.deltaY*0.01))});
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
+function loop(){
+  requestAnimationFrame(loop);
+  planets.forEach(p=>{p.a+=p.s;p.m.position.set(Math.cos(p.a)*p.r,Math.sin(p.a*0.3)*0.4,Math.sin(p.a)*p.r)});
+  cam.position.x=Math.sin(mx)*dist;cam.position.z=Math.cos(mx)*dist;cam.position.y=8+my*4;cam.lookAt(0,0,0);
+  ren.render(scene,cam);
+}
+loop();
+</script></body></html>
