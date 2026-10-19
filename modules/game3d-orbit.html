@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>3D Orbit</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#cde;font-family:system-ui}
+#h{position:fixed;top:12px;left:12px;z-index:2;text-shadow:0 2px 8px #000}canvas{display:block}</style></head><body>
+<div id="h">Drag to orbit · Pinch/scroll zoom · Auto spin</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,500);cam.position.set(0,12,22);
+const ren=new THREE.WebGLRenderer({antialias:true});ren.setPixelRatio(Math.min(devicePixelRatio,2));ren.setSize(innerWidth,innerHeight);document.body.appendChild(ren.domElement);
+// stars
+const starG=new THREE.BufferGeometry();const starP=[];for(let i=0;i<1200;i++){starP.push((Math.random()-0.5)*400,(Math.random()-0.5)*400,(Math.random()-0.5)*400)}
+starG.setAttribute('position',new THREE.Float32BufferAttribute(starP,3));
+scene.add(new THREE.Points(starG,new THREE.PointsMaterial({color:0xffffff,size:0.55})));
+scene.add(new THREE.AmbientLight(0x3355aa,0.55));
+const sunL=new THREE.PointLight(0xffddaa,3,120);scene.add(sunL);
+const sun=new THREE.Mesh(new THREE.SphereGeometry(2.1,48,48),new THREE.MeshBasicMaterial({color:0xffcc66}));scene.add(sun);
+const glow=new THREE.Mesh(new THREE.SphereGeometry(2.6,32,32),new THREE.MeshBasicMaterial({color:0xffaa33,transparent:true,opacity:0.25}));scene.add(glow);
+const planets=[];
+const cols=[0x66ccff,0xff8866,0x88ff99,0xff66aa,0xaaccff,0xffdd88];
+for(let i=0;i<6;i++){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(0.35+i*0.1,32,32),new THREE.MeshStandardMaterial({color:cols[i],roughness:0.4,metalness:0.2}));
+  const orbit=new THREE.Line(new THREE.BufferGeometry().setFromPoints(new THREE.EllipseCurve(0,0,3.5+i*2.1,3.5+i*2.1,0,Math.PI*2,false,0).getPoints(64).map(p=>new THREE.Vector3(p.x,0,p.y))),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0.15}));
+  scene.add(orbit);scene.add(m);planets.push({m,r:3.5+i*2.1,s:0.008+i*0.002,a:i});
+}
+let mx=0.4,my=0.25,dist=24,down=false,lx=0,ly=0;
+ren.domElement.addEventListener('pointerdown',e=>{down=true;lx=e.clientX;ly=e.clientY;ren.domElement.setPointerCapture(e.pointerId)});
+ren.domElement.addEventListener('pointerup',e=>{down=false});
+ren.domElement.addEventListener('pointermove',e=>{if(!down)return;mx+=(e.clientX-lx)*0.005;my=Math.max(-1,Math.min(1.2,my+(e.clientY-ly)*0.004));lx=e.clientX;ly=e.clientY});
+ren.domElement.addEventListener('wheel',e=>{dist=Math.max(8,Math.min(50,dist+e.deltaY*0.02))},{passive:true});
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
+function loop(){
+  requestAnimationFrame(loop);
+  if(!down)mx+=0.002;
+  planets.forEach(p=>{p.a+=p.s;p.m.position.set(Math.cos(p.a)*p.r,Math.sin(p.a*0.35)*0.6,Math.sin(p.a)*p.r);p.m.rotation.y+=0.01});
+  sun.rotation.y+=0.002;glow.scale.setScalar(1+Math.sin(Date.now()*0.003)*0.03);
+  cam.position.x=Math.sin(mx)*Math.cos(my)*dist;cam.position.z=Math.cos(mx)*Math.cos(my)*dist;cam.position.y=Math.sin(my)*dist*0.8;cam.lookAt(0,0,0);
+  ren.render(scene,cam);
+}
+loop();
+</script></body></html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>3D Parkour</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#0b1220;font-family:system-ui;touch-action:none;color:#fff}
+#ui{position:fixed;top:10px;left:12px;z-index:5;text-shadow:0 2px 8px #000;font-size:14px}
+#pad{position:fixed;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:6}
+#pad button{width:58px;height:58px;border-radius:16px;border:1px solid #fff3;background:#ffffff1a;color:#fff;font-size:18px}
+canvas{display:block}
+</style></head><body>
+<div id="ui">WASD / pad · Jump · Orbs: <b id="sc">0</b></div>
+<div id="pad">
+  <button type="button" data-k="left">◀</button>
+  <button type="button" data-k="back">▼</button>
+  <button type="button" data-k="jump">⤒</button>
+  <button type="button" data-k="forward">▲</button>
+  <button type="button" data-k="right">▶</button>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+(function(){
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x9ec9ef);scene.fog=new THREE.Fog(0x9ec9ef,20,90);
+const cam=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,200);
+const ren=new THREE.WebGLRenderer({antialias:true});ren.setPixelRatio(Math.min(devicePixelRatio,2));ren.setSize(innerWidth,innerHeight);document.body.appendChild(ren.domElement);
+ren.domElement.tabIndex=0;ren.domElement.focus();
+scene.add(new THREE.HemisphereLight(0xffffff,0x6688aa,1));
+const dl=new THREE.DirectionalLight(0xfff0d0,1);dl.position.set(12,25,8);scene.add(dl);
+
+const platforms=[];
+function plat(x,y,z,w,h,d,c){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:c,roughness:0.8}));m.position.set(x,y,z);m.receiveShadow=true;scene.add(m);platforms.push({m,w,h,d});return m}
+plat(0,0,0,18,1,18,0x3d4254);
+for(let i=1;i<=14;i++)plat((i%2?2.4:-2.4),i*1.15,-i*3.6,3.6,0.55,3.6, i%2?0x5b4b8a:0x4a6fa5);
+
+// humanoid player
+const player=new THREE.Group();
+const torso=new THREE.Mesh(new THREE.BoxGeometry(0.55,0.7,0.35),new THREE.MeshStandardMaterial({color:0x7c6cff}));torso.position.y=1.15;player.add(torso);
+const head=new THREE.Mesh(new THREE.SphereGeometry(0.22,16,16),new THREE.MeshStandardMaterial({color:0xffe0bd}));head.position.y=1.7;player.add(head);
+const legL=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.55,0.22),new THREE.MeshStandardMaterial({color:0x333355}));legL.position.set(-0.15,0.45,0);player.add(legL);
+const legR=legL.clone();legR.position.x=0.15;player.add(legR);
+const armL=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.5,0.14),new THREE.MeshStandardMaterial({color:0x6d5efc}));armL.position.set(-0.4,1.2,0);player.add(armL);
+const armR=armL.clone();armR.position.x=0.4;player.add(armR);
+player.position.set(0,1.2,0);scene.add(player);
+
+const orbs=[];
+for(let i=0;i<12;i++){
+  const o=new THREE.Mesh(new THREE.SphereGeometry(0.22,12,12),new THREE.MeshStandardMaterial({color:0x5eead4,emissive:0x0d9488,emissiveIntensity:0.6}));
+  o.position.set((i%2?1.2:-1.2),1.6+i*1.15,-i*3.6);scene.add(o);orbs.push(o);
+}
+
+const hold={left:0,right:0,forward:0,back:0,jump:0};
+const keys={};
+addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault()});
+addEventListener('keyup',e=>keys[e.code]=false);
+document.querySelectorAll('#pad button').forEach(btn=>{
+  const k=btn.getAttribute('data-k');
+  const on=e=>{e.preventDefault();hold[k]=1};const off=e=>{e.preventDefault();hold[k]=0};
+  btn.addEventListener('pointerdown',on);btn.addEventListener('pointerup',off);btn.addEventListener('pointerleave',off);btn.addEventListener('pointercancel',off);
+});
+ren.domElement.addEventListener('pointerdown',()=>ren.domElement.focus());
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
+
+let vy=0,score=0,t=0,onG=false;
+function loop(){
+  requestAnimationFrame(loop);t+=0.16;
+  const sp=0.11;
+  if(keys['KeyA']||keys['ArrowLeft']||hold.left)player.position.x-=sp;
+  if(keys['KeyD']||keys['ArrowRight']||hold.right)player.position.x+=sp;
+  if(keys['KeyW']||keys['ArrowUp']||hold.forward)player.position.z-=sp;
+  if(keys['KeyS']||keys['ArrowDown']||hold.back)player.position.z+=sp;
+  vy-=0.014;player.position.y+=vy;onG=false;
+  platforms.forEach(p=>{
+    const dx=Math.abs(player.position.x-p.m.position.x),dz=Math.abs(player.position.z-p.m.position.z);
+    const top=p.m.position.y+p.h/2+0.85;
+    if(dx<p.w/2 && dz<p.d/2 && player.position.y<=top+0.25 && player.position.y>=top-0.7 && vy<=0){player.position.y=top;vy=0;onG=true}
+  });
+  if(onG&&(keys['Space']||hold.jump))vy=0.24;
+  // run anim
+  const run=(keys['KeyW']||keys['KeyA']||keys['KeyS']||keys['KeyD']||hold.left||hold.right||hold.forward||hold.back)?1:0;
+  legL.rotation.x=Math.sin(t*run)*0.6*run;legR.rotation.x=-Math.sin(t*run)*0.6*run;
+  armL.rotation.x=-Math.sin(t*run)*0.5*run;armR.rotation.x=Math.sin(t*run)*0.5*run;
+  orbs.forEach(o=>{o.position.y+=Math.sin(t+o.position.z)*0.003;o.rotation.y+=0.03;
+    if(o.visible&&o.position.distanceTo(player.position)<0.9){o.visible=false;score++}});
+  document.getElementById('sc').textContent=score;
+  cam.position.lerp(new THREE.Vector3(player.position.x,player.position.y+4.5,player.position.z+7.5),0.12);
+  cam.lookAt(player.position.x,player.position.y+0.5,player.position.z);
+  ren.render(scene,cam);
+}
+loop();
+})();
+</script></body></html>
